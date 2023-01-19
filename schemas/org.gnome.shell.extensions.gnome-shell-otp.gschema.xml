@@ -1,0 +1,9 @@
+<schemalist gettext-domain="gnome-shell-extensions">
+  <schema id="org.gnome.shell.extensions.gnome-shell-otp" path="/org/gnome/shell/extensions/gnome-shell-otp/">
+    <key name="secret-list" type="as">
+      <default>[ ]</default>
+      <summary>Secret keys list</summary>
+      <description>A list of secret and properties. Each secret has secretcode, username, epoctime(default 30) and digits(default 6)</description>
+    </key>
+  </schema>
+</schemalist>

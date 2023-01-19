@@ -1,0 +1,9 @@
+{
+  "name": "Gnome Shell OTP",
+  "description": "Show and copy otp keys",
+  "uuid": "gnome-shell-otp@osmank3.net",
+  "shell-version": [
+    "43"
+  ],
+  "version": 1
+}
