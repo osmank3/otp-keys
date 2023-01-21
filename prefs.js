@@ -68,11 +68,11 @@ class Secret extends GObject.Object {
             "sha1"
         )
     };
-    
+
     static {
         GObject.registerClass(this);
     }
-    
+
     constructor(secret) {
         super();
         this.secretcode = secret.secretcode;
@@ -89,11 +89,11 @@ class SecretsList extends GObject.Object {
     static {
         GObject.registerClass(this);
     }
-    
+
     #settings = ExtensionUtils.getSettings("org.gnome.shell.extensions.gnome-shell-otp");
     #secrets = [];
     #changedId;
-    
+
     constructor() {
         super();
         this.#changedId =
@@ -101,10 +101,10 @@ class SecretsList extends GObject.Object {
                 () => this.#sync());
         this.#sync();
     }
-    
+
     append(secret) {
         const pos = this.#secrets.length;
-        
+
         this.#secrets.push(new Secret({
             secretcode: secret.secretcode,
             username: secret.username,
@@ -113,21 +113,21 @@ class SecretsList extends GObject.Object {
             hashlib: secret.hashlib
         }));
         this.#saveSecrets();
-        
+
         this.items_changed(pos, 0, 1);
     }
-    
+
     remove(secretcode) {
         const pos = this.#secrets.findIndex(s => s.secretcode === secretcode);
         if (pos < 0)
             return;
-        
+
         this.#secrets.splice(pos, 1);
         this.#saveSecrets();
-        
+
         this.items_changed(pos, 1, 0);
     }
-    
+
     copyToClipboard(secretcode) {
         this.#secrets.forEach((s) => {
             if (s.secretcode === secretcode) {
@@ -138,7 +138,7 @@ class SecretsList extends GObject.Object {
             }
         });
     }
-    
+
     getSecret(secretcode) {
         let found = null;
         this.#secrets.forEach((s) => {
@@ -148,7 +148,7 @@ class SecretsList extends GObject.Object {
         });
         return found;
     }
-    
+
     #saveSecrets() {
         this.#settings.block_signal_handler(this.#changedId);
         this.#settings.set_strv(
@@ -157,10 +157,10 @@ class SecretsList extends GObject.Object {
         );
         this.#settings.unblock_signal_handler(this.#changedId)
     }
-    
+
     #sync() {
         const removed = this.#secrets.length;
-        
+
         this.#secrets = [];
         for (const stringSecret of this.#settings.get_strv(SETTINGS_KEY)) {
             const [secretcode, username, epoctime, digits, hashlib] = stringSecret.split(":");
@@ -175,11 +175,11 @@ class SecretsList extends GObject.Object {
         }
         this.items_changed(0, removed, this.#secrets.length);
     }
-    
+
     vfunc_get_item_type() {
         return Secret;
     }
-    
+
     vfunc_get_n_items() {
         return this.#secrets.length;
     }
@@ -193,71 +193,78 @@ class SecretsList extends GObject.Object {
 class GnomeShellOtpSettingsWidget extends Adw.PreferencesGroup {
     static {
         GObject.registerClass(this);
-        
+
         this.install_action("secrets.add", null, self => self._addNewSecret());
         this.install_action("secrets.remove", "s", (self, name, param) => self._secrets.remove(param.unpack()));
         this.install_action("secrets.copy", "s", (self, name, param) => self._secrets.copyToClipboard(param.unpack()));
         this.install_action("secrets.edit", "s", (self, name, param) => self._editSecret(self._secrets.getSecret(param.unpack())));
     }
-    
+
     constructor() {
         super({
             title: _('Secrets'),
         });
-        
+        this._status = true;
+        this.connect('unrealize', this._onUnrealize.bind(this));
+
         this._secrets = new SecretsList();
-        
-        
+
         this._list = new Gtk.ListBox({
             selection_mode: Gtk.SelectionMode.NONE,
             css_classes: ['boxed-list'],
         });
         this.add(this._list);
-        
-        
+
         this._fillList();
-        
-        let interval = 30 - (parseInt(new Date().getTime() / 1000) % 30);
-        setTimeout(
+
+        let interval = 30000 - (parseInt(new Date().getTime()) % 30000);
+        GLib.timeout_add(
+            GLib.PRIORITY_DEFAULT,
+            interval,
             () => {
                 this._fillList();
-                setInterval(
+                GLib.timeout_add(
+                    GLib.PRIORITY_DEFAULT,
+                    30000,
                     () => {
                         this._fillList();
-                    },
-                    30000
+                        return this._status;
+                    }
                 );
-            },
-            interval * 1000
+                return false;
+            }
         );
     }
-    
+
     _fillList() {
         const store = new Gio.ListStore({item_type: Gio.ListModel});
         const listModel = new Gtk.FlattenListModel({model: store});
         store.append(this._secrets);
         store.append(new NewItemModel());
-        
+
         while (this._list.get_last_child() != null) {
             this._list.remove(this._list.get_last_child());
         }
-        
+
         this._list.bind_model(listModel, item => {
             return item instanceof NewItem
                 ? new NewSecretRow()
                 : new SecretRow(item);
         });
-        
     }
-    
+
     _addNewSecret() {
         const dialog = new NewSecretDialog(this.get_root());
         dialog.show();
     }
-    
+
     _editSecret(secret) {
         const dialog = new NewSecretDialog(this.get_root(), secret);
         dialog.show();
+    }
+
+    _onUnrealize() {
+        this._status = false;
     }
 }
 
@@ -272,7 +279,7 @@ class SecretRow extends Adw.ActionRow {
             activatable: false,
             title: secret.username,
         });
-        
+
         const code = new Gtk.Button({
             label: this.human_readable_code(Totp.getCode(secret.secretcode, secret.digits, secret.epoctime, secret.hashlib)),
             action_name: 'secrets.copy',
@@ -280,7 +287,7 @@ class SecretRow extends Adw.ActionRow {
             valign: Gtk.Align.CENTER,
         })
         this.add_suffix(code)
-        
+
         const edit = new Gtk.Button({
             action_name: 'secrets.edit',
             action_target: new GLib.Variant('s', secret.secretcode),
@@ -299,7 +306,7 @@ class SecretRow extends Adw.ActionRow {
         });
         this.add_suffix(button);
     }
-    
+
     human_readable_code(code) {
         let readableCode = String(code);
         if (readableCode.length === 6)
@@ -338,10 +345,10 @@ class NewSecretRow extends Gtk.ListBoxRow {
 class NewSecretDialog extends Gtk.Dialog {
     static {
         GObject.registerClass(this);
-        
+
         this.install_action("secret.save", null, self => self._saveNewSecret());
     }
-    
+
     constructor(parent, secret = null) {
         super({
             title: _("New Secret"),
@@ -349,9 +356,9 @@ class NewSecretDialog extends Gtk.Dialog {
             modal: true,
             use_header_bar: true,
         });
-        
+
         this.editMode = false;
-        
+
         this.main = new Gtk.Grid({
             margin_top: 10,
             margin_bottom: 10,
@@ -362,37 +369,37 @@ class NewSecretDialog extends Gtk.Dialog {
             column_homogeneous: false,
             row_homogeneous: false
         });
-        
+
         let usernameLabel = new Gtk.Label({label: _("Username"), halign: Gtk.Align.START});
         let secretLabel = new Gtk.Label({label: _("Secret Code"), halign: Gtk.Align.START});
         let epoctimeLabel = new Gtk.Label({label: _("Epoc Time"), halign: Gtk.Align.START});
         let digitsLabel = new Gtk.Label({label: _("Digits"), halign: Gtk.Align.START});
         let hashlibLabel = new Gtk.Label({label: _("Algoritm"), halign: Gtk.Align.START});
-        
+
         this.usernameEntry = new Gtk.Entry({
             halign: Gtk.Align.END,
             editable: true,
             visible: true,
             width_chars: 50
         });
-        
+
         this.secretEntry = new Gtk.Entry({
             halign: Gtk.Align.END,
             editable: true,
             visible: true,
             width_chars: 50
         });
-        
+
         this.epoctime30SecToggle = new Gtk.ToggleButton({
             label: _("30 seconds"),
             active: true,
         });
-        
+
         this.epoctime60SecToggle = new Gtk.ToggleButton({
             label: _("60 seconds"),
             group: this.epoctime30SecToggle,
         });
-        
+
         this.digitsSpinner = new Gtk.SpinButton({
             halign: Gtk.Align.END,
             adjustment: new Gtk.Adjustment({
@@ -402,27 +409,27 @@ class NewSecretDialog extends Gtk.Dialog {
             }),
             value: 6
         });
-        
+
         this.hashlibToggleSha1 = new Gtk.ToggleButton({
             label: "SHA-1",
             active: true,
         });
-        
+
         this.hashlibToggleSha256 = new Gtk.ToggleButton({
             label: "SHA-256",
             group: this.hashlibToggleSha1,
         });
-        
+
         this.hashlibToggleSha512 = new Gtk.ToggleButton({
             label: "SHA-512",
             group: this.hashlibToggleSha1,
         });
-        
+
         const addRow = ((main) => {
             let row = 0;
             return (label, input) => {
                 let inputWidget = input;
-                
+
                 if (Array.isArray(input)) {
                     inputWidget = new Gtk.Box({
                         orientation: Gtk.Orientation.HORIZONTAL,
@@ -444,8 +451,7 @@ class NewSecretDialog extends Gtk.Dialog {
                 row++;
             };
         })(this.main);
-        
-        
+
         if (secret != null) {
             this.editMode = true;
             this.originalSecret = secret.secretcode;
@@ -463,23 +469,23 @@ class NewSecretDialog extends Gtk.Dialog {
             else if (secret.hashlib === "sha512")
                 this.hashlibToggleSha512.set_active(true);
         }
-        
+
         addRow(usernameLabel, this.usernameEntry);
         addRow(secretLabel, this.secretEntry);
         addRow(epoctimeLabel, [this.epoctime30SecToggle, this.epoctime60SecToggle]);
         addRow(digitsLabel, this.digitsSpinner);
         addRow(hashlibLabel, [this.hashlibToggleSha1, this.hashlibToggleSha256, this.hashlibToggleSha512]);
-        
+
         this.set_child(this.main);
-        
+
         this.saveButton = new Gtk.Button({
             label: _("Save"),
             action_name: "secret.save",
         });
-        
+
         this.add_action_widget(this.saveButton, 1);
     }
-    
+
     _saveNewSecret() {
         let secrets = new SecretsList();
         try {
@@ -517,7 +523,4 @@ function init() {
 function buildPrefsWidget() {
     return new GnomeShellOtpSettingsWidget();
 }
-
-
-
 

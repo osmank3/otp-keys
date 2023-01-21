@@ -20,7 +20,7 @@
 
 const GETTEXT_DOMAIN = 'gnome-shell-otp';
 
-const { GObject, St, Clutter } = imports.gi;
+const { GObject, St, Clutter, GLib } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
@@ -79,7 +79,7 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
 
         Main.notify(_("Code copied to clipboard."));
     }
-    
+
     human_readable_code(code) {
         let readableCode = String(code);
         if (readableCode.length === 6)
@@ -96,34 +96,24 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
 const Indicator = GObject.registerClass(
 class Indicator extends PanelMenu.Button {
     _init() {
-        super._init(0.0, 'Gnome Shell OTP');
+        super._init(0.5, 'Gnome Shell OTP');
 
         this._settings = ExtensionUtils.getSettings("org.gnome.shell.extensions.gnome-shell-otp");
-        
-        this._changedId =
-            this._settings.connect(`changed::${SETTINGS_KEY}`,
-                () => this._sync());
-        this._sync();
 
         this.add_child(new St.Icon({
             icon_name: 'dialog-password-symbolic',
             style_class: 'system-status-icon',
         }));
 
-        this._fillMenu();
-        let interval = 30 - (parseInt(new Date().getTime() / 1000) % 30);
-        setTimeout(
-            () => {
-                this._fillMenu();
-                setInterval(
-                    () => {
-                        this._fillMenu();
-                    },
-                    30000
-                );
-            },
-            interval * 1000
-        );
+        this._changedId =
+            this._settings.connect(`changed::${SETTINGS_KEY}`,
+                () => this._sync());
+
+        this._menuStatus = true;
+        this._sync();
+
+        this.menu.connect('open-state-changed', this._onOpenStateChanged.bind(this));
+        this.menu.connect('destroy', this._onDestroy.bind(this));
     }
 
     _sync() {
@@ -144,26 +134,55 @@ class Indicator extends PanelMenu.Button {
     }
 
     _fillMenu() {
-        if (this != null) {
-            this.menu.removeAll();
-            this._secrets.forEach(secret => {
-                let item = new SecretMenuItem(secret);
-                this.menu.addMenuItem(item);
-            });
+        this.menu.removeAll();
+        this._secrets.forEach(secret => {
+            let item = new SecretMenuItem(secret);
+            this.menu.addMenuItem(item);
+        });
 
-            let preferences = new PopupMenu.PopupMenuItem(_("Preferences"));
-            preferences.connect('activate', () => {
-                if (typeof ExtensionUtils.openPrefs === 'function') {
-                    ExtensionUtils.openPrefs();
-                } else {
-                    Util.spawn([
-                        "gnome-shell-extension-prefs",
-                        ThisExtension.uuid
-                    ]);
+        let preferences = new PopupMenu.PopupMenuItem(_("Preferences"));
+        preferences.connect('activate', () => {
+            if (typeof ExtensionUtils.openPrefs === 'function') {
+                ExtensionUtils.openPrefs();
+            } else {
+                Util.spawn([
+                    "gnome-shell-extension-prefs",
+                    ThisExtension.uuid
+                ]);
+            }
+        });
+        this.menu.addMenuItem(preferences);
+    }
+
+    _onOpenStateChanged(menu, open) {
+        if (open) {
+            this._menuStatus = true;
+            this._fillMenu();
+            let interval = 30000 - (parseInt(new Date().getTime()) % 30000);
+            GLib.timeout_add(
+                GLib.PRIORITY_DEFAULT,
+                interval,
+                () => {
+                    this._fillMenu();
+                    GLib.timeout_add(
+                        GLib.PRIORITY_DEFAULT,
+                        30000,
+                        () => {
+                            this._fillMenu();
+                            return this._menuStatus;
+                        }
+                    );
+                    return false;
                 }
-            });
-            this.menu.addMenuItem(preferences);
+            );
         }
+        else {
+            this._menuStatus = false;
+        }
+    }
+
+    _onDestroy() {
+        this._menuStatus = false;
     }
 });
 
@@ -188,3 +207,4 @@ class Extension {
 function init(meta) {
     return new Extension(meta.uuid);
 }
+
