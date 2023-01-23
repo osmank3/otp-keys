@@ -1,0 +1,81 @@
+# ITALIAN TRANSLATION FOR OTP-KEYS.
+# Copyright (C) 2023
+# This file is distributed under the same license as the otp-keys package.
+# ALBANO BATTISTELLA <ALBANO_BATTISTELLA@HOTMAIL.COM>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-01-22 22:01+0300\n"
+"PO-Revision-Date: 2023-01-23 19:04+01000\n"
+"Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
+"Language-Team: Italian <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: extension.js:80
+msgid "Code copied to clipboard."
+msgstr "Codice copiato negli appunti."
+
+#: extension.js:143
+msgid "Preferences"
+msgstr "Preferenze"
+
+#: prefs.js:205
+msgid "Secrets"
+msgstr "Segreti"
+
+#: prefs.js:341
+msgid "Add Secret"
+msgstr "Aggingi segreto"
+
+#: prefs.js:354
+msgid "New Secret"
+msgstr "Nuovo segreto"
+
+#: prefs.js:373
+msgid "Username"
+msgstr "Nome utente"
+
+#: prefs.js:374
+msgid "Secret Code"
+msgstr "Codice segreto"
+
+#: prefs.js:375
+msgid "Epoc Time"
+msgstr ""
+
+#: prefs.js:376
+msgid "Digits"
+msgstr "Cifre"
+
+#: prefs.js:377
+msgid "Algoritm"
+msgstr "Algoritmo"
+
+#: prefs.js:394
+msgid "30 seconds"
+msgstr "30 secondi"
+
+#: prefs.js:399
+msgid "60 seconds"
+msgstr "60 secondi"
+
+#: prefs.js:482
+msgid "Save"
+msgstr "Salva"
+
+#: prefs.js:493
+msgid "Fields must be filled"
+msgstr "I campi devono essere compilati"
+
+#: prefs.js:509
+msgid "Please insert valid secret key"
+msgstr "Inserisci una chiave segreta valida"
+
+#: prefs.js:510
+msgid "Please insert a username"
+msgstr "Inserisci un nome utente"
