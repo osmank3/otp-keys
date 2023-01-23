@@ -3,6 +3,7 @@
   "description": "Show and copy otp keys",
   "uuid": "otp-keys@osmank3.net",
   "url": "https://github.com/osmank3/otp-keys",
+  "gettext-domain": "otp-keys",
   "shell-version": [
     "43"
   ],
