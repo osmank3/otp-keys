@@ -1,5 +1,5 @@
 <schemalist gettext-domain="gnome-shell-extensions">
-  <schema id="org.gnome.shell.extensions.gnome-shell-otp" path="/org/gnome/shell/extensions/gnome-shell-otp/">
+  <schema id="org.gnome.shell.extensions.otp-keys" path="/org/gnome/shell/extensions/otp-keys/">
     <key name="secret-list" type="as">
       <default>[ ]</default>
       <summary>Secret keys list</summary>

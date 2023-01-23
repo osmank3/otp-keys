@@ -18,7 +18,7 @@
 
 /* exported init */
 
-const GETTEXT_DOMAIN = 'gnome-shell-otp';
+const GETTEXT_DOMAIN = 'otp-keys';
 
 const { GObject, St, Clutter, GLib } = imports.gi;
 
@@ -98,7 +98,7 @@ class Indicator extends PanelMenu.Button {
     _init() {
         super._init(0.5, 'Gnome Shell OTP');
 
-        this._settings = ExtensionUtils.getSettings("org.gnome.shell.extensions.gnome-shell-otp");
+        this._settings = ExtensionUtils.getSettings("org.gnome.shell.extensions.otp-keys");
 
         this.add_child(new St.Icon({
             icon_name: 'dialog-password-symbolic',

@@ -1,9 +1,10 @@
 {
-  "name": "Gnome Shell OTP",
+  "name": "OTP keys",
   "description": "Show and copy otp keys",
-  "uuid": "gnome-shell-otp@osmank3.net",
+  "uuid": "otp-keys@osmank3.net",
+  "url": "https://github.com/osmank3/otp-keys",
   "shell-version": [
     "43"
   ],
-  "version": 2
+  "version": 3
 }

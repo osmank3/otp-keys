@@ -1,0 +1,83 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Osman Karagöz <osmank3@gmail.com>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-01-22 22:01+0300\n"
+"PO-Revision-Date: 2023-01-22 22:04+0300\n"
+"Last-Translator: Osman Karagöz <osmank3@gmail.com>\n"
+"Language-Team: \n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: extension.js:80
+msgid "Code copied to clipboard."
+msgstr "Kod panoya kopyalandı."
+
+#: extension.js:143
+msgid "Preferences"
+msgstr "Tercihler"
+
+#: prefs.js:205
+msgid "Secrets"
+msgstr "Gizli Kodlar"
+
+#: prefs.js:341
+msgid "Add Secret"
+msgstr "Gizli Kod Ekle"
+
+#: prefs.js:354
+msgid "New Secret"
+msgstr "Yeni Gizli Kod"
+
+#: prefs.js:373
+msgid "Username"
+msgstr "Kullanıcı Adı"
+
+#: prefs.js:374
+msgid "Secret Code"
+msgstr "Gizli Kod"
+
+#: prefs.js:375
+msgid "Epoc Time"
+msgstr "Zaman Aralığı"
+
+#: prefs.js:376
+msgid "Digits"
+msgstr "Rakamlar"
+
+#: prefs.js:377
+msgid "Algoritm"
+msgstr "Algoritma"
+
+#: prefs.js:394
+msgid "30 seconds"
+msgstr "30 saniye"
+
+#: prefs.js:399
+msgid "60 seconds"
+msgstr "60 saniye"
+
+#: prefs.js:482
+msgid "Save"
+msgstr "Kaydet"
+
+#: prefs.js:493
+msgid "Fields must be filled"
+msgstr "Alan doldurulmalı"
+
+#: prefs.js:509
+msgid "Please insert valid secret key"
+msgstr "Lütfen geçerli bir gizli kod girin"
+
+#: prefs.js:510
+msgid "Please insert a username"
+msgstr "Lütfen bir kullanıcı adı girin"

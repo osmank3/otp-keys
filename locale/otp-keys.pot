@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023
+# This file is distributed under the same license as the otp-keys package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-01-22 22:01+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: extension.js:80
+msgid "Code copied to clipboard."
+msgstr ""
+
+#: extension.js:143
+msgid "Preferences"
+msgstr ""
+
+#: prefs.js:205
+msgid "Secrets"
+msgstr ""
+
+#: prefs.js:341
+msgid "Add Secret"
+msgstr ""
+
+#: prefs.js:354
+msgid "New Secret"
+msgstr ""
+
+#: prefs.js:373
+msgid "Username"
+msgstr ""
+
+#: prefs.js:374
+msgid "Secret Code"
+msgstr ""
+
+#: prefs.js:375
+msgid "Epoc Time"
+msgstr ""
+
+#: prefs.js:376
+msgid "Digits"
+msgstr ""
+
+#: prefs.js:377
+msgid "Algoritm"
+msgstr ""
+
+#: prefs.js:394
+msgid "30 seconds"
+msgstr ""
+
+#: prefs.js:399
+msgid "60 seconds"
+msgstr ""
+
+#: prefs.js:482
+msgid "Save"
+msgstr ""
+
+#: prefs.js:493
+msgid "Fields must be filled"
+msgstr ""
+
+#: prefs.js:509
+msgid "Please insert valid secret key"
+msgstr ""
+
+#: prefs.js:510
+msgid "Please insert a username"
+msgstr ""

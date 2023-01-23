@@ -9,7 +9,7 @@ const clipboard = Gdk.Display.get_default().get_clipboard();
 const clipboardPrimary = Gdk.Display.get_default().get_primary_clipboard();
 
 const Gettext = imports.gettext;
-const _ = Gettext.domain('gnome-shell-otp').gettext;
+const _ = Gettext.domain('otp-keys').gettext;
 
 const SETTINGS_KEY = "secret-list";
 
@@ -90,7 +90,7 @@ class SecretsList extends GObject.Object {
         GObject.registerClass(this);
     }
 
-    #settings = ExtensionUtils.getSettings("org.gnome.shell.extensions.gnome-shell-otp");
+    #settings = ExtensionUtils.getSettings("org.gnome.shell.extensions.otp-keys");
     #secrets = [];
     #changedId;
 
@@ -190,7 +190,7 @@ class SecretsList extends GObject.Object {
 }
 
 
-class GnomeShellOtpSettingsWidget extends Adw.PreferencesGroup {
+class OtpKeysSettingsWidget extends Adw.PreferencesGroup {
     static {
         GObject.registerClass(this);
 
@@ -514,13 +514,13 @@ class NewSecretDialog extends Gtk.Dialog {
 
 function init() {
     let localeDir = Me.dir.get_child('locale');
-    Gettext.bindtextdomain('gnome-shell-otp', localeDir.get_path());
+    Gettext.bindtextdomain('otp-keys', localeDir.get_path());
 }
 
 /**
  * @returns {Gtk.Widget} - the prefs widget
  */
 function buildPrefsWidget() {
-    return new GnomeShellOtpSettingsWidget();
+    return new OtpKeysSettingsWidget();
 }
 
