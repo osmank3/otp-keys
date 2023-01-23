@@ -5,8 +5,6 @@ const { Adw, Gio, GLib, GObject, Gtk, Gdk } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Totp = Me.imports.totp;
-const clipboard = Gdk.Display.get_default().get_clipboard();
-const clipboardPrimary = Gdk.Display.get_default().get_primary_clipboard();
 
 const Gettext = imports.gettext;
 const _ = Gettext.domain('otp-keys').gettext;
@@ -129,6 +127,9 @@ class SecretsList extends GObject.Object {
     }
 
     copyToClipboard(secretcode) {
+        const clipboard = Gdk.Display.get_default().get_clipboard();
+        const clipboardPrimary = Gdk.Display.get_default().get_primary_clipboard();
+
         this.#secrets.forEach((s) => {
             if (s.secretcode === secretcode) {
                 let code = Totp.getCode(s.secretcode, s.digits, s.epoctime, s.hashlib);
@@ -204,8 +205,9 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup {
         super({
             title: _('Secrets'),
         });
-        this._status = true;
+
         this.connect('unrealize', this._onUnrealize.bind(this));
+        this.connect('destroy', this._onDestroy.bind(this));
 
         this._secrets = new SecretsList();
 
@@ -218,22 +220,27 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup {
         this._fillList();
 
         let interval = 30000 - (parseInt(new Date().getTime()) % 30000);
-        GLib.timeout_add(
-            GLib.PRIORITY_DEFAULT,
-            interval,
-            () => {
-                this._fillList();
-                GLib.timeout_add(
-                    GLib.PRIORITY_DEFAULT,
-                    30000,
-                    () => {
-                        this._fillList();
-                        return this._status;
+        if (this._delay == null) {
+            this._delay = GLib.timeout_add(
+                GLib.PRIORITY_DEFAULT,
+                interval,
+                () => {
+                    this._fillList();
+                    if (this._repeater == null) {
+                        this._repeater = GLib.timeout_add(
+                            GLib.PRIORITY_DEFAULT,
+                            30000,
+                            () => {
+                                this._fillList();
+                                return true;
+                            }
+                        );
                     }
-                );
-                return false;
-            }
-        );
+                    this._delay = null;
+                    return false;
+                }
+            );
+        }
     }
 
     _fillList() {
@@ -264,7 +271,25 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup {
     }
 
     _onUnrealize() {
-        this._status = false;
+        if (this._delay) {
+            GLib.Source.remove(this._delay);
+            this._delay = null;
+        }
+        if (this._repeater) {
+            GLib.Source.remove(this._repeater);
+            this._repeater = null;
+        }
+    }
+
+    _onDestroy() {
+        if (this._delay) {
+            GLib.Source.remove(this._delay);
+            this._delay = null;
+        }
+        if (this._repeater) {
+            GLib.Source.remove(this._repeater);
+            this._repeater = null;
+        }
     }
 }
 

@@ -27,8 +27,6 @@ const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
-const clipboard = St.Clipboard.get_default();
-
 const _ = ExtensionUtils.gettext;
 
 const ThisExtension = ExtensionUtils.getCurrentExtension();
@@ -73,6 +71,7 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
     }
 
     _copyToClipboard() {
+        const clipboard = St.Clipboard.get_default();
         let code = Totp.getCode(this._secret.secretcode, this._secret.digits, this._secret.epoctime, this._secret.hashlib);
         clipboard.set_text(St.ClipboardType.PRIMARY, code);
         clipboard.set_text(St.ClipboardType.CLIPBOARD, code);
@@ -109,11 +108,7 @@ class Indicator extends PanelMenu.Button {
             this._settings.connect(`changed::${SETTINGS_KEY}`,
                 () => this._sync());
 
-        this._menuStatus = true;
         this._sync();
-
-        this.menu.connect('open-state-changed', this._onOpenStateChanged.bind(this));
-        this.menu.connect('destroy', this._onDestroy.bind(this));
     }
 
     _sync() {
@@ -142,47 +137,58 @@ class Indicator extends PanelMenu.Button {
 
         let preferences = new PopupMenu.PopupMenuItem(_("Preferences"));
         preferences.connect('activate', () => {
-            if (typeof ExtensionUtils.openPrefs === 'function') {
-                ExtensionUtils.openPrefs();
-            } else {
-                Util.spawn([
-                    "gnome-shell-extension-prefs",
-                    ThisExtension.uuid
-                ]);
-            }
+            ExtensionUtils.openPrefs();
         });
         this.menu.addMenuItem(preferences);
     }
 
     _onOpenStateChanged(menu, open) {
         if (open) {
-            this._menuStatus = true;
-            this._fillMenu();
-            let interval = 30000 - (parseInt(new Date().getTime()) % 30000);
-            GLib.timeout_add(
-                GLib.PRIORITY_DEFAULT,
-                interval,
-                () => {
-                    this._fillMenu();
-                    GLib.timeout_add(
-                        GLib.PRIORITY_DEFAULT,
-                        30000,
-                        () => {
-                            this._fillMenu();
-                            return this._menuStatus;
+            if (this._delay == null) {
+                this._fillMenu();
+                let interval = 30000 - (parseInt(new Date().getTime()) % 30000);
+                this._delay = GLib.timeout_add(
+                    GLib.PRIORITY_DEFAULT,
+                    interval,
+                    () => {
+                        this._fillMenu();
+                        if (this._repeater == null) {
+                            this._repeater = GLib.timeout_add(
+                                GLib.PRIORITY_DEFAULT,
+                                30000,
+                                () => {
+                                    this._fillMenu();
+                                    return true;
+                                }
+                            );
                         }
-                    );
-                    return false;
-                }
-            );
+                        this._delay = null;
+                        return false;
+                    }
+                );
+            }
         }
         else {
-            this._menuStatus = false;
+            if (this._delay) {
+                GLib.Source.remove(this._delay);
+                this._delay = null;
+            }
+            if (this._repeater) {
+                GLib.Source.remove(this._repeater);
+                this._repeater = null;
+            }
         }
     }
 
     _onDestroy() {
-        this._menuStatus = false;
+        if (this._delay) {
+            GLib.Source.remove(this._delay);
+            this._delay = null;
+        }
+        if (this._repeater) {
+            GLib.Source.remove(this._repeater);
+            this._repeater = null;
+        }
     }
 });
 
