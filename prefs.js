@@ -50,6 +50,11 @@ class Secret extends GObject.Object {
             GObject.ParamFlags.READWRITE,
             null
         ),
+	    name: GObject.ParamSpec.string(
+            "name", "name", "name",
+            GObject.ParamFlags.READWRITE,
+            null
+        ),
         epoctime: GObject.ParamSpec.string(
             "epoctime", "epoctime", "epoctime",
             GObject.ParamFlags.READWRITE,
@@ -75,6 +80,7 @@ class Secret extends GObject.Object {
         super();
         this.secretcode = secret.secretcode;
         this.username = secret.username;
+        this.name = secret.name;
         this.epoctime = secret.epoctime;
         this.digits = secret.digits;
         this.hashlib = secret.hashlib;
@@ -106,6 +112,7 @@ class SecretsList extends GObject.Object {
         this.#secrets.push(new Secret({
             secretcode: secret.secretcode,
             username: secret.username,
+            name: secret.name,
             epoctime: secret.epoctime,
             digits: secret.digits,
             hashlib: secret.hashlib
@@ -154,7 +161,7 @@ class SecretsList extends GObject.Object {
         this.#settings.block_signal_handler(this.#changedId);
         this.#settings.set_strv(
             SETTINGS_KEY,
-            this.#secrets.map(s => `${s.secretcode}:${s.username}:${s.epoctime}:${s.digits}:${s.hashlib}`)
+            this.#secrets.map(s => `${s.secretcode}:${s.username}:${s.name}:${s.epoctime}:${s.digits}:${s.hashlib}`)
         );
         this.#settings.unblock_signal_handler(this.#changedId)
     }
@@ -164,10 +171,11 @@ class SecretsList extends GObject.Object {
 
         this.#secrets = [];
         for (const stringSecret of this.#settings.get_strv(SETTINGS_KEY)) {
-            const [secretcode, username, epoctime, digits, hashlib] = stringSecret.split(":");
+            const [secretcode, username, name, epoctime, digits, hashlib] = stringSecret.split(":");
             const secret = {
                 "secretcode": secretcode,
                 "username": username,
+                "name": name,
                 "epoctime": epoctime,
                 "digits": digits,
                 "hashlib": hashlib
@@ -302,7 +310,7 @@ class SecretRow extends Adw.ActionRow {
     constructor(secret) {
         super({
             activatable: false,
-            title: secret.username,
+            title: secret.name,
         });
 
         const code = new Gtk.Button({
@@ -396,7 +404,8 @@ class NewSecretDialog extends Gtk.Dialog {
         });
 
         let usernameLabel = new Gtk.Label({label: _("Username"), halign: Gtk.Align.START});
-        let secretLabel = new Gtk.Label({label: _("Secret Code"), halign: Gtk.Align.START});
+        let nameLabel = new Gtk.Label({label: _("Name"), halign: Gtk.Align.START});
+	let secretLabel = new Gtk.Label({label: _("Secret Code"), halign: Gtk.Align.START});
         let epoctimeLabel = new Gtk.Label({label: _("Epoc Time"), halign: Gtk.Align.START});
         let digitsLabel = new Gtk.Label({label: _("Digits"), halign: Gtk.Align.START});
         let hashlibLabel = new Gtk.Label({label: _("Algoritm"), halign: Gtk.Align.START});
@@ -407,6 +416,13 @@ class NewSecretDialog extends Gtk.Dialog {
             visible: true,
             width_chars: 50
         });
+
+	this.nameEntry = new Gtk.Entry({
+	   halign: Gtk.Align.END,
+	   editable: true,
+	   visible: true,
+	   width_chars: 50
+	});
 
         this.secretEntry = new Gtk.Entry({
             halign: Gtk.Align.END,
@@ -481,6 +497,7 @@ class NewSecretDialog extends Gtk.Dialog {
             this.editMode = true;
             this.originalSecret = secret.secretcode;
             this.usernameEntry.set_text(secret.username);
+	    this.nameEntry.set_text(secret.name);
             this.secretEntry.set_text(secret.secretcode);
             if (secret.epoctime === "30")
                 this.epoctime30SecToggle.set_active(true);
@@ -496,6 +513,7 @@ class NewSecretDialog extends Gtk.Dialog {
         }
 
         addRow(usernameLabel, this.usernameEntry);
+	addRow(nameLabel, this.nameEntry);
         addRow(secretLabel, this.secretEntry);
         addRow(epoctimeLabel, [this.epoctime30SecToggle, this.epoctime60SecToggle]);
         addRow(digitsLabel, this.digitsSpinner);
@@ -523,6 +541,7 @@ class NewSecretDialog extends Gtk.Dialog {
             let secret = new Secret({
                 "secretcode": this.secretEntry.get_text(),
                 "username": this.usernameEntry.get_text(),
+		"name": this.nameEntry.get_text(),
                 "epoctime": this.epoctime30SecToggle.get_active() ? 30 : 60,
                 "digits": this.digitsSpinner.get_value(),
                 "hashlib": this.hashlibToggleSha1.get_active() ? "sha1" : (this.hashlibToggleSha256.get_active() ? "sha256": "sha512"),

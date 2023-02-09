@@ -46,7 +46,7 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._secret = secret;
 
         this.label = new St.Label({
-            text: secret.username,
+            text: secret.name,
             x_expand: true,
             y_align: Clutter.ActorAlign.CENTER,
         });
@@ -114,10 +114,11 @@ class Indicator extends PanelMenu.Button {
     _sync() {
         this._secrets = [];
         for (const stringSecret of this._settings.get_strv(SETTINGS_KEY)) {
-            const [secretcode, username, epoctime, digits, hashlib] = stringSecret.split(":");
+            const [secretcode, username, name, epoctime, digits, hashlib] = stringSecret.split(":");
             const secret = {
                 "secretcode": secretcode,
                 "username": username,
+		"name": name,
                 "epoctime": epoctime,
                 "digits": digits,
                 "hashlib": hashlib
