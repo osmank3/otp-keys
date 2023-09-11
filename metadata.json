@@ -5,7 +5,7 @@
   "url": "https://github.com/osmank3/otp-keys",
   "gettext-domain": "otp-keys",
   "shell-version": [
-    "43", "44"
+    "42", "43", "44"
   ],
   "version": 5
 }
