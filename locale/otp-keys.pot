@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2023
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the otp-keys package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 3\n"
+"Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-22 22:01+0300\n"
+"POT-Creation-Date: 2023-09-13 11:03+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,66 +17,70 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:80
+#: extension.js:77
 msgid "Code copied to clipboard."
 msgstr ""
 
-#: extension.js:143
+#: extension.js:137
 msgid "Preferences"
 msgstr ""
 
-#: prefs.js:205
+#: prefs.js:209
 msgid "Secrets"
 msgstr ""
 
-#: prefs.js:341
+#: prefs.js:370
 msgid "Add Secret"
 msgstr ""
 
-#: prefs.js:354
+#: prefs.js:383
 msgid "New Secret"
 msgstr ""
 
-#: prefs.js:373
+#: prefs.js:383
+msgid "Edit Secret"
+msgstr ""
+
+#: prefs.js:403
 msgid "Username"
 msgstr ""
 
-#: prefs.js:374
+#: prefs.js:404
 msgid "Secret Code"
 msgstr ""
 
-#: prefs.js:375
+#: prefs.js:405
 msgid "Epoc Time"
 msgstr ""
 
-#: prefs.js:376
+#: prefs.js:406
 msgid "Digits"
 msgstr ""
 
-#: prefs.js:377
+#: prefs.js:407
 msgid "Algoritm"
 msgstr ""
 
-#: prefs.js:394
+#: prefs.js:424
 msgid "30 seconds"
 msgstr ""
 
-#: prefs.js:399
+#: prefs.js:429
 msgid "60 seconds"
 msgstr ""
 
-#: prefs.js:482
+#: prefs.js:512
 msgid "Save"
 msgstr ""
 
-#: prefs.js:493
+#: prefs.js:523
 msgid "Fields must be filled"
 msgstr ""
 
-#: prefs.js:509
+#: prefs.js:539
 msgid "Please insert valid secret key"
 msgstr ""
 
-#: prefs.js:510
+#: prefs.js:540
 msgid "Please insert a username"
 msgstr ""

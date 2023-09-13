@@ -18,19 +18,17 @@
 
 /* exported init */
 
-const GETTEXT_DOMAIN = 'otp-keys';
+import St from 'gi://St';
+import GLib from 'gi://GLib';
+import Clutter from 'gi://Clutter';
+import GObject from 'gi://GObject';
 
-const { GObject, St, Clutter, GLib } = imports.gi;
+import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Main = imports.ui.main;
-const PanelMenu = imports.ui.panelMenu;
-const PopupMenu = imports.ui.popupMenu;
-
-const _ = ExtensionUtils.gettext;
-
-const ThisExtension = ExtensionUtils.getCurrentExtension();
-const Totp = ThisExtension.imports.totp;
+import * as Totp from './totp.js';
 
 const SETTINGS_KEY = "secret-list";
 
@@ -94,10 +92,11 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
 
 const Indicator = GObject.registerClass(
 class Indicator extends PanelMenu.Button {
-    _init() {
+    _init(parent, settings) {
         super._init(0.5, 'Gnome Shell OTP');
 
-        this._settings = ExtensionUtils.getSettings("org.gnome.shell.extensions.otp-keys");
+        this._parent = parent;
+        this._settings = settings;
 
         this.add_child(new St.Icon({
             icon_name: 'dialog-password-symbolic',
@@ -137,7 +136,7 @@ class Indicator extends PanelMenu.Button {
 
         let preferences = new PopupMenu.PopupMenuItem(_("Preferences"));
         preferences.connect('activate', () => {
-            ExtensionUtils.openPrefs();
+            this._parent.openPreferences();
         });
         this.menu.addMenuItem(preferences);
     }
@@ -193,14 +192,9 @@ class Indicator extends PanelMenu.Button {
 });
 
 
-class Extension {
-    constructor(uuid) {
-        this._uuid = uuid;
-        ExtensionUtils.initTranslations(GETTEXT_DOMAIN);
-    }
-
+export default class OtpKeys extends Extension {
     enable() {
-        this._indicator = new Indicator();
+        this._indicator = new Indicator(this, this.getSettings());
         Main.panel.addToStatusArea(this._uuid, this._indicator);
     }
 
@@ -209,8 +203,3 @@ class Extension {
         this._indicator = null;
     }
 }
-
-function init(meta) {
-    return new Extension(meta.uuid);
-}
-

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-22 22:01+0300\n"
+"POT-Creation-Date: 2023-09-13 11:03+0300\n"
 "PO-Revision-Date: 2023-04-30 17:59+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: \n"
@@ -18,66 +18,71 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#: extension.js:80
+#: extension.js:77
 msgid "Code copied to clipboard."
 msgstr "De code is gekopieerd naar het klembord."
 
-#: extension.js:143
+#: extension.js:137
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#: prefs.js:205
+#: prefs.js:209
 msgid "Secrets"
 msgstr "Geheimen"
 
-#: prefs.js:341
+#: prefs.js:370
 msgid "Add Secret"
 msgstr "Geheim toevoegen"
 
-#: prefs.js:354
+#: prefs.js:383
 msgid "New Secret"
 msgstr "Nieuw geheim"
 
-#: prefs.js:373
+#: prefs.js:383
+#, fuzzy
+msgid "Edit Secret"
+msgstr "Nieuw geheim"
+
+#: prefs.js:403
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: prefs.js:374
+#: prefs.js:404
 msgid "Secret Code"
 msgstr "Geheime code"
 
-#: prefs.js:375
+#: prefs.js:405
 msgid "Epoc Time"
 msgstr "Unix-tijd"
 
-#: prefs.js:376
+#: prefs.js:406
 msgid "Digits"
 msgstr "Getallen"
 
-#: prefs.js:377
+#: prefs.js:407
 msgid "Algoritm"
 msgstr "Algoritme"
 
-#: prefs.js:394
+#: prefs.js:424
 msgid "30 seconds"
 msgstr "30 seconden"
 
-#: prefs.js:399
+#: prefs.js:429
 msgid "60 seconds"
 msgstr "60 seconden"
 
-#: prefs.js:482
+#: prefs.js:512
 msgid "Save"
 msgstr "Opslaan"
 
-#: prefs.js:493
+#: prefs.js:523
 msgid "Fields must be filled"
 msgstr "Vul alle velden in"
 
-#: prefs.js:509
+#: prefs.js:539
 msgid "Please insert valid secret key"
 msgstr "Voer een geldige geheime sleutel in"
 
-#: prefs.js:510
+#: prefs.js:540
 msgid "Please insert a username"
 msgstr "Voer een gebruikersnaam in"

@@ -16,6 +16,17 @@ Alternatively, you can check out a version from git, compile the language files,
 
 ```bash
 git clone https://github.com/osmank3/otp-keys
+```
+
+If you are using Gnome version older than 45, set branch to `gnome-42-44`, then clone:
+
+```bash
+git clone https://github.com/osmank3/otp-keys -b gnome-42-44
+```
+
+Build and install:
+
+```bash
 meson otp-keys /tmp/otp-keys-build
 ninja -C /tmp/otp-keys-build install
 gnome-extensions enable otp-keys@osmank3.net

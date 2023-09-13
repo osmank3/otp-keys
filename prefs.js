@@ -1,13 +1,14 @@
 // -*- mode: js2; indent-tabs-mode: nil; js2-basic-offset: 4 -*-
+import Adw from 'gi://Adw';
+import Gio from 'gi://Gio';
+import Gdk from 'gi://Gdk';
+import Gtk from 'gi://Gtk';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const { Adw, Gio, GLib, GObject, Gtk, Gdk } = imports.gi;
+import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const Totp = Me.imports.totp;
-
-const Gettext = imports.gettext;
-const _ = Gettext.domain('otp-keys').gettext;
+import * as Totp from './totp.js';
 
 const SETTINGS_KEY = "secret-list";
 
@@ -22,7 +23,7 @@ class NewItemModel extends GObject.Object {
         GObject.registerClass(this);
     }
 
-    #item = new NewItem();
+    _item = new NewItem();
 
     vfunc_get_item_type() {
         return NewItem;
@@ -33,7 +34,7 @@ class NewItemModel extends GObject.Object {
     }
 
     vfunc_get_item(_pos) {
-        return this.#item;
+        return this._item;
     }
 }
 
@@ -88,40 +89,38 @@ class SecretsList extends GObject.Object {
         GObject.registerClass(this);
     }
 
-    #settings = ExtensionUtils.getSettings("org.gnome.shell.extensions.otp-keys");
-    #secrets = [];
-    #changedId;
-
-    constructor() {
+    constructor(settings) {
         super();
-        this.#changedId =
-            this.#settings.connect(`changed::${SETTINGS_KEY}`,
-                () => this.#sync());
-        this.#sync();
+        this._settings = settings;
+        this.secrets = [];
+        this.changedId =
+            this._settings.connect(`changed::${SETTINGS_KEY}`,
+                () => this._sync());
+        this._sync();
     }
 
     append(secret) {
-        const pos = this.#secrets.length;
+        const pos = this.secrets.length;
 
-        this.#secrets.push(new Secret({
+        this.secrets.push(new Secret({
             secretcode: secret.secretcode,
             username: secret.username,
             epoctime: secret.epoctime,
             digits: secret.digits,
             hashlib: secret.hashlib
         }));
-        this.#saveSecrets();
+        this._saveSecrets();
 
         this.items_changed(pos, 0, 1);
     }
 
     remove(secretcode) {
-        const pos = this.#secrets.findIndex(s => s.secretcode === secretcode);
+        const pos = this.secrets.findIndex(s => s.secretcode === secretcode);
         if (pos < 0)
             return;
 
-        this.#secrets.splice(pos, 1);
-        this.#saveSecrets();
+        this.secrets.splice(pos, 1);
+        this._saveSecrets();
 
         this.items_changed(pos, 1, 0);
     }
@@ -130,7 +129,7 @@ class SecretsList extends GObject.Object {
         const clipboard = Gdk.Display.get_default().get_clipboard();
         const clipboardPrimary = Gdk.Display.get_default().get_primary_clipboard();
 
-        this.#secrets.forEach((s) => {
+        this.secrets.forEach((s) => {
             if (s.secretcode === secretcode) {
                 let code = Totp.getCode(s.secretcode, s.digits, s.epoctime, s.hashlib);
                 clipboard.set(code);
@@ -142,7 +141,7 @@ class SecretsList extends GObject.Object {
 
     getSecret(secretcode) {
         let found = null;
-        this.#secrets.forEach((s) => {
+        this.secrets.forEach((s) => {
             if (s.secretcode === secretcode) {
                 found = s;
             }
@@ -150,20 +149,20 @@ class SecretsList extends GObject.Object {
         return found;
     }
 
-    #saveSecrets() {
-        this.#settings.block_signal_handler(this.#changedId);
-        this.#settings.set_strv(
+    _saveSecrets() {
+        this._settings.block_signal_handler(this.changedId);
+        this._settings.set_strv(
             SETTINGS_KEY,
-            this.#secrets.map(s => `${s.secretcode}:${s.username}:${s.epoctime}:${s.digits}:${s.hashlib}`)
+            this.secrets.map(s => `${s.secretcode}:${s.username}:${s.epoctime}:${s.digits}:${s.hashlib}`)
         );
-        this.#settings.unblock_signal_handler(this.#changedId)
+        this._settings.unblock_signal_handler(this.changedId)
     }
 
-    #sync() {
-        const removed = this.#secrets.length;
+    _sync() {
+        const removed = this.secrets.length;
 
-        this.#secrets = [];
-        for (const stringSecret of this.#settings.get_strv(SETTINGS_KEY)) {
+        this.secrets = [];
+        for (const stringSecret of this._settings.get_strv(SETTINGS_KEY)) {
             const [secretcode, username, epoctime, digits, hashlib] = stringSecret.split(":");
             const secret = {
                 "secretcode": secretcode,
@@ -172,9 +171,9 @@ class SecretsList extends GObject.Object {
                 "digits": digits,
                 "hashlib": hashlib
             };
-            this.#secrets.push(new Secret(secret));
+            this.secrets.push(new Secret(secret));
         }
-        this.items_changed(0, removed, this.#secrets.length);
+        this.items_changed(0, removed, this.secrets.length);
     }
 
     vfunc_get_item_type() {
@@ -182,11 +181,11 @@ class SecretsList extends GObject.Object {
     }
 
     vfunc_get_n_items() {
-        return this.#secrets.length;
+        return this.secrets.length;
     }
 
     vfunc_get_item(pos) {
-        return this.#secrets[pos] ?? null;
+        return this.secrets[pos] ?? null;
     }
 }
 
@@ -196,12 +195,12 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup {
         GObject.registerClass(this);
 
         this.install_action("secrets.add", null, self => self._addNewSecret());
-        this.install_action("secrets.remove", "s", (self, name, param) => self._secrets.remove(param.unpack()));
-        this.install_action("secrets.copy", "s", (self, name, param) => self._secrets.copyToClipboard(param.unpack()));
-        this.install_action("secrets.edit", "s", (self, name, param) => self._editSecret(self._secrets.getSecret(param.unpack())));
+        this.install_action("secrets.remove", "s", (self, name, param) => self.secrets.remove(param.unpack()));
+        this.install_action("secrets.copy", "s", (self, name, param) => self.secrets.copyToClipboard(param.unpack()));
+        this.install_action("secrets.edit", "s", (self, name, param) => self._editSecret(self.secrets.getSecret(param.unpack())));
     }
 
-    constructor() {
+    constructor(settings) {
         super({
             title: _('Secrets'),
         });
@@ -209,7 +208,8 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup {
         this.connect('unrealize', this._onUnrealize.bind(this));
         this.connect('destroy', this._onDestroy.bind(this));
 
-        this._secrets = new SecretsList();
+        this._settings = settings;
+        this.secrets = new SecretsList(settings);
 
         this._list = new Gtk.ListBox({
             selection_mode: Gtk.SelectionMode.NONE,
@@ -246,7 +246,7 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup {
     _fillList() {
         const store = new Gio.ListStore({item_type: Gio.ListModel});
         const listModel = new Gtk.FlattenListModel({model: store});
-        store.append(this._secrets);
+        store.append(this.secrets);
         store.append(new NewItemModel());
 
         while (this._list.get_last_child() != null) {
@@ -261,12 +261,12 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup {
     }
 
     _addNewSecret() {
-        const dialog = new NewSecretDialog(this.get_root());
+        const dialog = new NewSecretDialog(this.get_root(), this._settings);
         dialog.show();
     }
 
     _editSecret(secret) {
-        const dialog = new NewSecretDialog(this.get_root(), secret);
+        const dialog = new NewSecretDialog(this.get_root(), this._settings, secret);
         dialog.show();
     }
 
@@ -374,14 +374,15 @@ class NewSecretDialog extends Gtk.Dialog {
         this.install_action("secret.save", null, self => self._saveNewSecret());
     }
 
-    constructor(parent, secret = null) {
+    constructor(parent, settings, secret = null) {
         super({
-            title: _("New Secret"),
+            title: secret === null ? _("New Secret") : _("Edit Secret"),
             transient_for: parent,
             modal: true,
             use_header_bar: true,
         });
 
+        this._settings = settings;
         this.editMode = false;
 
         this.main = new Gtk.Grid({
@@ -512,7 +513,7 @@ class NewSecretDialog extends Gtk.Dialog {
     }
 
     _saveNewSecret() {
-        let secrets = new SecretsList();
+        let secrets = new SecretsList(this._settings);
         try {
             if (this.secretEntry.get_text() === "" | this.usernameEntry.get_text() === "")
                 throw Error(_("Fields must be filled"));
@@ -537,15 +538,8 @@ class NewSecretDialog extends Gtk.Dialog {
     }
 }
 
-function init() {
-    let localeDir = Me.dir.get_child('locale');
-    Gettext.bindtextdomain('otp-keys', localeDir.get_path());
+export default class OtpKeysPrefs extends ExtensionPreferences {
+    getPreferencesWidget() {
+        return new OtpKeysSettingsWidget(this.getSettings());
+    }
 }
-
-/**
- * @returns {Gtk.Widget} - the prefs widget
- */
-function buildPrefsWidget() {
-    return new OtpKeysSettingsWidget();
-}
-
