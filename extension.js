@@ -57,15 +57,7 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
         });
         this.add(code);
 
-        let copyIcon = new St.Icon({
-            icon_name: "edit-copy-symbolic",
-            style_class: "popup-menu-icon",
-        });
-        let copyButton = new St.Button({
-            child: copyIcon,
-        });
-        copyButton.connect('clicked', this._copyToClipboard.bind(this));
-        this.add(copyButton);
+        this.connect('activate', this._copyToClipboard.bind(this));
     }
 
     _copyToClipboard() {
