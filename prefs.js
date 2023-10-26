@@ -10,7 +10,8 @@ import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Ex
 
 import * as Totp from './totp.js';
 
-const SETTINGS_KEY = "secret-list";
+const SETTINGS_SECRETS = "secret-list";
+const SETTINGS_NOTIFY = "notifications";
 
 
 class NewItem extends GObject.Object {}
@@ -94,7 +95,7 @@ class SecretsList extends GObject.Object {
         this._settings = settings;
         this.secrets = [];
         this.changedId =
-            this._settings.connect(`changed::${SETTINGS_KEY}`,
+            this._settings.connect(`changed::${SETTINGS_SECRETS}`,
                 () => this._sync());
         this._sync();
     }
@@ -152,7 +153,7 @@ class SecretsList extends GObject.Object {
     _saveSecrets() {
         this._settings.block_signal_handler(this.changedId);
         this._settings.set_strv(
-            SETTINGS_KEY,
+            SETTINGS_SECRETS,
             this.secrets.map(s => `${s.secretcode}:${s.username}:${s.epoctime}:${s.digits}:${s.hashlib}`)
         );
         this._settings.unblock_signal_handler(this.changedId)
@@ -162,7 +163,7 @@ class SecretsList extends GObject.Object {
         const removed = this.secrets.length;
 
         this.secrets = [];
-        for (const stringSecret of this._settings.get_strv(SETTINGS_KEY)) {
+        for (const stringSecret of this._settings.get_strv(SETTINGS_SECRETS)) {
             const [secretcode, username, epoctime, digits, hashlib] = stringSecret.split(":");
             const secret = {
                 "secretcode": secretcode,
@@ -190,7 +191,24 @@ class SecretsList extends GObject.Object {
 }
 
 
-class OtpKeysSettingsWidget extends Adw.PreferencesGroup {
+class OtpKeysSettingsPageWidget extends Adw.PreferencesPage {
+    static {
+        GObject.registerClass(this);
+    }
+
+    constructor(settings) {
+        super();
+        let secretsListWidget = new OtpKeysSecretListWidget(settings);
+        this.add(secretsListWidget);
+
+        let settingsWidget = new OtpKeysSettingsWidget(settings);
+        this.add(settingsWidget);
+    }
+}
+
+
+class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
+
     static {
         GObject.registerClass(this);
 
@@ -293,6 +311,26 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup {
     }
 }
 
+class OtpKeysSettingsWidget extends Adw.PreferencesGroup{
+    static {
+        GObject.registerClass(this);
+    }
+
+    constructor(settings) {
+        super({
+            title: _("Settings")
+        });
+
+        this._settings = settings;
+
+        this.showNotificationSwitch = new Adw.SwitchRow({
+            title: _("Show Notifications")
+        })
+        this.add(this.showNotificationSwitch);
+
+        this._settings.bind(SETTINGS_NOTIFY, this.showNotificationSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
+    }
+}
 
 class SecretRow extends Adw.ActionRow {
     static {
@@ -540,6 +578,6 @@ class NewSecretDialog extends Gtk.Dialog {
 
 export default class OtpKeysPrefs extends ExtensionPreferences {
     getPreferencesWidget() {
-        return new OtpKeysSettingsWidget(this.getSettings());
+        return new OtpKeysSettingsPageWidget(this.getSettings());
     }
 }

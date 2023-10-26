@@ -30,7 +30,8 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import * as Totp from './totp.js';
 
-const SETTINGS_KEY = "secret-list";
+const SETTINGS_SECRETS = "secret-list";
+const SETTINGS_NOTIFY = "notifications";
 
 
 class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
@@ -38,10 +39,11 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
         GObject.registerClass(this);
     }
 
-    constructor(secret) {
+    constructor(secret, settings) {
         super();
 
         this._secret = secret;
+        this._settings = settings;
 
         this.label = new St.Label({
             text: secret.username,
@@ -57,6 +59,12 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
         });
         this.add(code);
 
+        let copyIcon = new St.Icon({
+            icon_name: "edit-copy-symbolic",
+            style_class: "popup-menu-icon",
+        });
+        this.add(copyIcon);
+
         this.connect('activate', this._copyToClipboard.bind(this));
     }
 
@@ -66,7 +74,8 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
         clipboard.set_text(St.ClipboardType.PRIMARY, code);
         clipboard.set_text(St.ClipboardType.CLIPBOARD, code);
 
-        Main.notify(_("Code copied to clipboard."));
+        if (this._settings.get_boolean(SETTINGS_NOTIFY))
+            Main.notify(_("Code copied to clipboard."));
     }
 
     human_readable_code(code) {
@@ -96,7 +105,7 @@ class Indicator extends PanelMenu.Button {
         }));
 
         this._changedId =
-            this._settings.connect(`changed::${SETTINGS_KEY}`,
+            this._settings.connect(`changed::${SETTINGS_SECRETS}`,
                 () => this._sync());
 
         this._sync();
@@ -104,7 +113,7 @@ class Indicator extends PanelMenu.Button {
 
     _sync() {
         this._secrets = [];
-        for (const stringSecret of this._settings.get_strv(SETTINGS_KEY)) {
+        for (const stringSecret of this._settings.get_strv(SETTINGS_SECRETS)) {
             const [secretcode, username, epoctime, digits, hashlib] = stringSecret.split(":");
             const secret = {
                 "secretcode": secretcode,
@@ -122,7 +131,7 @@ class Indicator extends PanelMenu.Button {
     _fillMenu() {
         this.menu.removeAll();
         this._secrets.forEach(secret => {
-            let item = new SecretMenuItem(secret);
+            let item = new SecretMenuItem(secret, this._settings);
             this.menu.addMenuItem(item);
         });
 

@@ -5,5 +5,10 @@
       <summary>Secret keys list</summary>
       <description>A list of secret and properties. Each secret has secretcode, username, epoctime(default 30) and digits(default 6)</description>
     </key>
+    <key name="notifications" type="b">
+      <default>true</default>
+      <summary>Notification status</summary>
+      <description>Whether notification shown on copying to clipboard actions</description>
+    </key>
   </schema>
 </schemalist>

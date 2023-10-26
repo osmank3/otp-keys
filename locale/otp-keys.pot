@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-13 11:03+0300\n"
+"POT-Creation-Date: 2023-10-26 22:40+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,70 +17,78 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:77
+#: extension.js:72
 msgid "Code copied to clipboard."
 msgstr ""
 
-#: extension.js:137
+#: extension.js:132
 msgid "Preferences"
 msgstr ""
 
-#: prefs.js:209
+#: prefs.js:223
 msgid "Secrets"
 msgstr ""
 
-#: prefs.js:370
-msgid "Add Secret"
+#: prefs.js:321
+msgid "Settings"
 msgstr ""
 
-#: prefs.js:383
-msgid "New Secret"
-msgstr ""
-
-#: prefs.js:383
-msgid "Edit Secret"
-msgstr ""
-
-#: prefs.js:403
-msgid "Username"
+#: prefs.js:327
+msgid "Show Notifications"
 msgstr ""
 
 #: prefs.js:404
+msgid "Add Secret"
+msgstr ""
+
+#: prefs.js:417
+msgid "New Secret"
+msgstr ""
+
+#: prefs.js:417
+msgid "Edit Secret"
+msgstr ""
+
+#: prefs.js:437
+msgid "Username"
+msgstr ""
+
+#: prefs.js:438
 msgid "Secret Code"
 msgstr ""
 
-#: prefs.js:405
+#: prefs.js:439
 msgid "Epoc Time"
 msgstr ""
 
-#: prefs.js:406
+#: prefs.js:440
 msgid "Digits"
 msgstr ""
 
-#: prefs.js:407
+#: prefs.js:441
 msgid "Algoritm"
 msgstr ""
 
-#: prefs.js:424
+#: prefs.js:458
 msgid "30 seconds"
 msgstr ""
 
-#: prefs.js:429
+#: prefs.js:463
 msgid "60 seconds"
 msgstr ""
 
-#: prefs.js:512
+#: prefs.js:546
 msgid "Save"
 msgstr ""
 
-#: prefs.js:523
+#: prefs.js:557
 msgid "Fields must be filled"
 msgstr ""
 
-#: prefs.js:539
+#: prefs.js:573
 msgid "Please insert valid secret key"
 msgstr ""
 
-#: prefs.js:540
+#: prefs.js:574
 msgid "Please insert a username"
 msgstr ""

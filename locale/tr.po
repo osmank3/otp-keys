@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-13 11:03+0300\n"
-"PO-Revision-Date: 2023-09-13 11:05+0300\n"
+"POT-Creation-Date: 2023-10-26 22:40+0300\n"
+"PO-Revision-Date: 2023-10-26 22:41+0300\n"
 "Last-Translator: Osman Karagöz <osmank3@gmail.com>\n"
 "Language-Team: \n"
 "Language: tr\n"
@@ -18,70 +18,78 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#: extension.js:77
+#: extension.js:72
 msgid "Code copied to clipboard."
 msgstr "Kod panoya kopyalandı."
 
-#: extension.js:137
+#: extension.js:132
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: prefs.js:209
+#: prefs.js:223
 msgid "Secrets"
 msgstr "Gizli Kodlar"
 
-#: prefs.js:370
+#: prefs.js:321
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: prefs.js:327
+msgid "Show Notifications"
+msgstr "Bildirimleri Göster"
+
+#: prefs.js:404
 msgid "Add Secret"
 msgstr "Gizli Kod Ekle"
 
-#: prefs.js:383
+#: prefs.js:417
 msgid "New Secret"
 msgstr "Yeni Gizli Kod"
 
-#: prefs.js:383
+#: prefs.js:417
 msgid "Edit Secret"
 msgstr "Gizli Kodu Düzenle"
 
-#: prefs.js:403
+#: prefs.js:437
 msgid "Username"
 msgstr "Kullanıcı Adı"
 
-#: prefs.js:404
+#: prefs.js:438
 msgid "Secret Code"
 msgstr "Gizli Kod"
 
-#: prefs.js:405
+#: prefs.js:439
 msgid "Epoc Time"
 msgstr "Zaman Aralığı"
 
-#: prefs.js:406
+#: prefs.js:440
 msgid "Digits"
 msgstr "Rakamlar"
 
-#: prefs.js:407
+#: prefs.js:441
 msgid "Algoritm"
 msgstr "Algoritma"
 
-#: prefs.js:424
+#: prefs.js:458
 msgid "30 seconds"
 msgstr "30 saniye"
 
-#: prefs.js:429
+#: prefs.js:463
 msgid "60 seconds"
 msgstr "60 saniye"
 
-#: prefs.js:512
+#: prefs.js:546
 msgid "Save"
 msgstr "Kaydet"
 
-#: prefs.js:523
+#: prefs.js:557
 msgid "Fields must be filled"
 msgstr "Alan doldurulmalı"
 
-#: prefs.js:539
+#: prefs.js:573
 msgid "Please insert valid secret key"
 msgstr "Lütfen geçerli bir gizli kod girin"
 
-#: prefs.js:540
+#: prefs.js:574
 msgid "Please insert a username"
 msgstr "Lütfen bir kullanıcı adı girin"
