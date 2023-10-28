@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the otp-keys package.
+# Óscar García Amor <ogarcia@connectical.com>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: otp-keys\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-10-26 22:40+0300\n"
+"PO-Revision-Date: 2023-10-28T12:36:51+02:00\n"
+"Last-Translator: Óscar García Amor <ogarcia@connectical.com>\n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: extension.js:72
+msgid "Code copied to clipboard."
+msgstr "Código copiado en el portapapeles."
+
+#: extension.js:132
+msgid "Preferences"
+msgstr "Preferencias"
+
+#: prefs.js:224
+msgid "Secrets"
+msgstr "Secretos"
+
+#: prefs.js:322
+msgid "Settings"
+msgstr "Ajustes"
+
+#: prefs.js:328
+msgid "Show Notifications"
+msgstr "Mostrar notificaciones"
+
+#: prefs.js:335
+msgid "Show Copy Icons"
+msgstr "Mostrar los iconos de copiar"
+
+#: prefs.js:412
+msgid "Add Secret"
+msgstr "Añadir secreto"
+
+#: prefs.js:425
+msgid "New Secret"
+msgstr "Nuevo secreto"
+
+#: prefs.js:425
+msgid "Edit Secret"
+msgstr "Editar Secreto"
+
+#: prefs.js:445
+msgid "Username"
+msgstr "Nombre de usuario"
+
+#: prefs.js:446
+msgid "Secret Code"
+msgstr "Código secreto"
+
+#: prefs.js:447
+msgid "Epoc Time"
+msgstr "Intervalo de tiempo"
+
+#: prefs.js:448
+msgid "Digits"
+msgstr "Dígitos"
+
+#: prefs.js:449
+msgid "Algoritm"
+msgstr "Algoritmo"
+
+#: prefs.js:466
+msgid "30 seconds"
+msgstr "30 segundos"
+
+#: prefs.js:471
+msgid "60 seconds"
+msgstr "60 segundos"
+
+#: prefs.js:554
+msgid "Save"
+msgstr "Guardar"
+
+#: prefs.js:565
+msgid "Fields must be filled"
+msgstr "Los campos deben rellenarse"
+
+#: prefs.js:581
+msgid "Please insert valid secret key"
+msgstr "Por favor, introduce una clave secreta válida"
+
+#: prefs.js:582
+msgid "Please insert a username"
+msgstr "Por favor, introduce un nombre de usuario"
