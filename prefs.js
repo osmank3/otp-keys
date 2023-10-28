@@ -12,6 +12,7 @@ import * as Totp from './totp.js';
 
 const SETTINGS_SECRETS = "secret-list";
 const SETTINGS_NOTIFY = "notifications";
+const SETTINGS_COPY_ICONS = "copy-icons";
 
 
 class NewItem extends GObject.Object {}
@@ -329,6 +330,13 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup{
         this.add(this.showNotificationSwitch);
 
         this._settings.bind(SETTINGS_NOTIFY, this.showNotificationSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
+
+        this.showCopyIconsSwitch = new Adw.SwitchRow({
+            title: _("Show Copy Icons")
+        })
+        this.add(this.showCopyIconsSwitch);
+
+        this._settings.bind(SETTINGS_COPY_ICONS, this.showCopyIconsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
     }
 }
 

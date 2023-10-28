@@ -24,71 +24,75 @@ msgstr "Codice copiato negli appunti."
 msgid "Preferences"
 msgstr "Preferenze"
 
-#: prefs.js:223
+#: prefs.js:224
 msgid "Secrets"
 msgstr "Segreti"
 
-#: prefs.js:321
+#: prefs.js:322
 msgid "Settings"
 msgstr ""
 
-#: prefs.js:327
+#: prefs.js:328
 msgid "Show Notifications"
 msgstr ""
 
-#: prefs.js:404
+#: prefs.js:335
+msgid "Show Copy Icons"
+msgstr ""
+
+#: prefs.js:412
 msgid "Add Secret"
 msgstr "Aggingi segreto"
 
-#: prefs.js:417
+#: prefs.js:425
 msgid "New Secret"
 msgstr "Nuovo segreto"
 
-#: prefs.js:417
+#: prefs.js:425
 #, fuzzy
 msgid "Edit Secret"
 msgstr "Nuovo segreto"
 
-#: prefs.js:437
+#: prefs.js:445
 msgid "Username"
 msgstr "Nome utente"
 
-#: prefs.js:438
+#: prefs.js:446
 msgid "Secret Code"
 msgstr "Codice segreto"
 
-#: prefs.js:439
+#: prefs.js:447
 msgid "Epoc Time"
 msgstr ""
 
-#: prefs.js:440
+#: prefs.js:448
 msgid "Digits"
 msgstr "Cifre"
 
-#: prefs.js:441
+#: prefs.js:449
 msgid "Algoritm"
 msgstr "Algoritmo"
 
-#: prefs.js:458
+#: prefs.js:466
 msgid "30 seconds"
 msgstr "30 secondi"
 
-#: prefs.js:463
+#: prefs.js:471
 msgid "60 seconds"
 msgstr "60 secondi"
 
-#: prefs.js:546
+#: prefs.js:554
 msgid "Save"
 msgstr "Salva"
 
-#: prefs.js:557
+#: prefs.js:565
 msgid "Fields must be filled"
 msgstr "I campi devono essere compilati"
 
-#: prefs.js:573
+#: prefs.js:581
 msgid "Please insert valid secret key"
 msgstr "Inserisci una chiave segreta valida"
 
-#: prefs.js:574
+#: prefs.js:582
 msgid "Please insert a username"
 msgstr "Inserisci un nome utente"

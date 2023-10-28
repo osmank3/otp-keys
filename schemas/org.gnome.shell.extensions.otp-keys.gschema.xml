@@ -10,5 +10,10 @@
       <summary>Notification status</summary>
       <description>Whether notification shown on copying to clipboard actions</description>
     </key>
+    <key name="copy-icons" type="b">
+      <default>true</default>
+      <summary>Copy icons</summary>
+      <description>Whether or not the copy icons is displayed in the secret keys list</description>
+    </key>
   </schema>
 </schemalist>
