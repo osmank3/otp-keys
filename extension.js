@@ -32,6 +32,7 @@ import * as Totp from './totp.js';
 
 const SETTINGS_SECRETS = "secret-list";
 const SETTINGS_NOTIFY = "notifications";
+const SETTINGS_COPY_ICONS = "copy-icons";
 
 
 class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
@@ -59,11 +60,13 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
         });
         this.add(code);
 
-        let copyIcon = new St.Icon({
-            icon_name: "edit-copy-symbolic",
-            style_class: "popup-menu-icon",
-        });
-        this.add(copyIcon);
+        if (this._settings.get_boolean(SETTINGS_COPY_ICONS)) {
+            let copyIcon = new St.Icon({
+                icon_name: "edit-copy-symbolic",
+                style_class: "popup-menu-icon",
+            });
+            this.add(copyIcon);
+        }
 
         this.connect('activate', this._copyToClipboard.bind(this));
     }

@@ -1,100 +1,98 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2023
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the otp-keys package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Óscar García Amor <ogarcia@connectical.com>, 2023.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 3\n"
+"Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-26 22:40+0300\n"
-"PO-Revision-Date: 2023-04-30 17:59+0200\n"
-"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
+"PO-Revision-Date: 2023-10-28T12:36:51+02:00\n"
+"Last-Translator: Óscar García Amor <ogarcia@connectical.com>\n"
 "Language-Team: \n"
-"Language: nl\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2.2\n"
 
 #: extension.js:72
 msgid "Code copied to clipboard."
-msgstr "De code is gekopieerd naar het klembord."
+msgstr "Código copiado en el portapapeles."
 
 #: extension.js:132
 msgid "Preferences"
-msgstr "Voorkeuren"
+msgstr "Preferencias"
 
 #: prefs.js:224
 msgid "Secrets"
-msgstr "Geheimen"
+msgstr "Secretos"
 
 #: prefs.js:322
 msgid "Settings"
-msgstr ""
+msgstr "Ajustes"
 
 #: prefs.js:328
 msgid "Show Notifications"
-msgstr ""
+msgstr "Mostrar notificaciones"
 
 #: prefs.js:335
 msgid "Show Copy Icons"
-msgstr ""
+msgstr "Mostrar los iconos de copiar"
 
 #: prefs.js:412
 msgid "Add Secret"
-msgstr "Geheim toevoegen"
+msgstr "Añadir secreto"
 
 #: prefs.js:425
 msgid "New Secret"
-msgstr "Nieuw geheim"
+msgstr "Nuevo secreto"
 
 #: prefs.js:425
-#, fuzzy
 msgid "Edit Secret"
-msgstr "Nieuw geheim"
+msgstr "Editar Secreto"
 
 #: prefs.js:445
 msgid "Username"
-msgstr "Gebruikersnaam"
+msgstr "Nombre de usuario"
 
 #: prefs.js:446
 msgid "Secret Code"
-msgstr "Geheime code"
+msgstr "Código secreto"
 
 #: prefs.js:447
 msgid "Epoc Time"
-msgstr "Unix-tijd"
+msgstr "Intervalo de tiempo"
 
 #: prefs.js:448
 msgid "Digits"
-msgstr "Getallen"
+msgstr "Dígitos"
 
 #: prefs.js:449
 msgid "Algoritm"
-msgstr "Algoritme"
+msgstr "Algoritmo"
 
 #: prefs.js:466
 msgid "30 seconds"
-msgstr "30 seconden"
+msgstr "30 segundos"
 
 #: prefs.js:471
 msgid "60 seconds"
-msgstr "60 seconden"
+msgstr "60 segundos"
 
 #: prefs.js:554
 msgid "Save"
-msgstr "Opslaan"
+msgstr "Guardar"
 
 #: prefs.js:565
 msgid "Fields must be filled"
-msgstr "Vul alle velden in"
+msgstr "Los campos deben rellenarse"
 
 #: prefs.js:581
 msgid "Please insert valid secret key"
-msgstr "Voer een geldige geheime sleutel in"
+msgstr "Por favor, introduce una clave secreta válida"
 
 #: prefs.js:582
 msgid "Please insert a username"
-msgstr "Voer een gebruikersnaam in"
+msgstr "Por favor, introduce un nombre de usuario"

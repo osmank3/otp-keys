@@ -26,70 +26,74 @@ msgstr "Kod panoya kopyalandı."
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: prefs.js:223
+#: prefs.js:224
 msgid "Secrets"
 msgstr "Gizli Kodlar"
 
-#: prefs.js:321
+#: prefs.js:322
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: prefs.js:327
+#: prefs.js:328
 msgid "Show Notifications"
 msgstr "Bildirimleri Göster"
 
-#: prefs.js:404
+#: prefs.js:335
+msgid "Show Copy Icons"
+msgstr ""
+
+#: prefs.js:412
 msgid "Add Secret"
 msgstr "Gizli Kod Ekle"
 
-#: prefs.js:417
+#: prefs.js:425
 msgid "New Secret"
 msgstr "Yeni Gizli Kod"
 
-#: prefs.js:417
+#: prefs.js:425
 msgid "Edit Secret"
 msgstr "Gizli Kodu Düzenle"
 
-#: prefs.js:437
+#: prefs.js:445
 msgid "Username"
 msgstr "Kullanıcı Adı"
 
-#: prefs.js:438
+#: prefs.js:446
 msgid "Secret Code"
 msgstr "Gizli Kod"
 
-#: prefs.js:439
+#: prefs.js:447
 msgid "Epoc Time"
 msgstr "Zaman Aralığı"
 
-#: prefs.js:440
+#: prefs.js:448
 msgid "Digits"
 msgstr "Rakamlar"
 
-#: prefs.js:441
+#: prefs.js:449
 msgid "Algoritm"
 msgstr "Algoritma"
 
-#: prefs.js:458
+#: prefs.js:466
 msgid "30 seconds"
 msgstr "30 saniye"
 
-#: prefs.js:463
+#: prefs.js:471
 msgid "60 seconds"
 msgstr "60 saniye"
 
-#: prefs.js:546
+#: prefs.js:554
 msgid "Save"
 msgstr "Kaydet"
 
-#: prefs.js:557
+#: prefs.js:565
 msgid "Fields must be filled"
 msgstr "Alan doldurulmalı"
 
-#: prefs.js:573
+#: prefs.js:581
 msgid "Please insert valid secret key"
 msgstr "Lütfen geçerli bir gizli kod girin"
 
-#: prefs.js:574
+#: prefs.js:582
 msgid "Please insert a username"
 msgstr "Lütfen bir kullanıcı adı girin"
