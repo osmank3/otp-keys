@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:40+0300\n"
+"POT-Creation-Date: 2023-10-29 20:04+0300\n"
 "PO-Revision-Date: 2023-10-26 22:41+0300\n"
 "Last-Translator: Osman Karagöz <osmank3@gmail.com>\n"
 "Language-Team: \n"
@@ -18,11 +18,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#: extension.js:72
+#: extension.js:81
 msgid "Code copied to clipboard."
 msgstr "Kod panoya kopyalandı."
 
-#: extension.js:132
+#: extension.js:141
 msgid "Preferences"
 msgstr "Tercihler"
 
@@ -40,7 +40,7 @@ msgstr "Bildirimleri Göster"
 
 #: prefs.js:335
 msgid "Show Copy Icons"
-msgstr ""
+msgstr "Kopyalama Sembolünü Göster"
 
 #: prefs.js:412
 msgid "Add Secret"

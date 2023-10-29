@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:40+0300\n"
+"POT-Creation-Date: 2023-10-29 20:04+0300\n"
 "PO-Revision-Date: 2023-10-28T12:36:51+02:00\n"
 "Last-Translator: Óscar García Amor <ogarcia@connectical.com>\n"
 "Language-Team: \n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: extension.js:72
+#: extension.js:81
 msgid "Code copied to clipboard."
 msgstr "Código copiado en el portapapeles."
 
-#: extension.js:132
+#: extension.js:141
 msgid "Preferences"
 msgstr "Preferencias"
 

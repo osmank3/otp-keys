@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:40+0300\n"
+"POT-Creation-Date: 2023-10-29 20:04+0300\n"
 "PO-Revision-Date: 2023-04-30 17:59+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: \n"
@@ -18,11 +18,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#: extension.js:72
+#: extension.js:81
 msgid "Code copied to clipboard."
 msgstr "De code is gekopieerd naar het klembord."
 
-#: extension.js:132
+#: extension.js:141
 msgid "Preferences"
 msgstr "Voorkeuren"
 

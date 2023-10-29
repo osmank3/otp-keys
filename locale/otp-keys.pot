@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:40+0300\n"
+"POT-Creation-Date: 2023-10-29 20:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:72
+#: extension.js:81
 msgid "Code copied to clipboard."
 msgstr ""
 
-#: extension.js:132
+#: extension.js:141
 msgid "Preferences"
 msgstr ""
 

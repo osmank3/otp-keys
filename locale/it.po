@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 22:40+0300\n"
+"POT-Creation-Date: 2023-10-29 20:04+0300\n"
 "PO-Revision-Date: 2023-01-23 19:04+01000\n"
 "Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:72
+#: extension.js:81
 msgid "Code copied to clipboard."
 msgstr "Codice copiato negli appunti."
 
-#: extension.js:132
+#: extension.js:141
 msgid "Preferences"
 msgstr "Preferenze"
 
