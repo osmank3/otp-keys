@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-29 20:04+0300\n"
+"POT-Creation-Date: 2023-11-05 14:39+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,82 +17,98 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:81
+#: extension.js:82
 msgid "Code copied to clipboard."
 msgstr ""
 
-#: extension.js:141
+#: extension.js:150 prefs.js:496
+msgid "Unlock Keyring"
+msgstr ""
+
+#: extension.js:163
 msgid "Preferences"
 msgstr ""
 
-#: prefs.js:224
+#: prefs.js:263
 msgid "Secrets"
 msgstr ""
 
-#: prefs.js:322
+#: prefs.js:381
 msgid "Settings"
 msgstr ""
 
-#: prefs.js:328
+#: prefs.js:387
 msgid "Show Notifications"
 msgstr ""
 
-#: prefs.js:335
+#: prefs.js:394
 msgid "Show Copy Icons"
 msgstr ""
 
-#: prefs.js:412
+#: prefs.js:466
 msgid "Add Secret"
 msgstr ""
 
-#: prefs.js:425
+#: prefs.js:477
+msgid "Import Secret"
+msgstr ""
+
+#: prefs.js:510
 msgid "New Secret"
 msgstr ""
 
-#: prefs.js:425
+#: prefs.js:510
 msgid "Edit Secret"
 msgstr ""
 
-#: prefs.js:445
+#: prefs.js:530
 msgid "Username"
 msgstr ""
 
-#: prefs.js:446
+#: prefs.js:531
+msgid "Issuer"
+msgstr ""
+
+#: prefs.js:532
 msgid "Secret Code"
 msgstr ""
 
-#: prefs.js:447
+#: prefs.js:533
 msgid "Epoc Time"
 msgstr ""
 
-#: prefs.js:448
+#: prefs.js:534
 msgid "Digits"
 msgstr ""
 
-#: prefs.js:449
+#: prefs.js:535
 msgid "Algoritm"
 msgstr ""
 
-#: prefs.js:466
+#: prefs.js:559
 msgid "30 seconds"
 msgstr ""
 
-#: prefs.js:471
+#: prefs.js:564
 msgid "60 seconds"
 msgstr ""
 
-#: prefs.js:554
+#: prefs.js:649
 msgid "Save"
 msgstr ""
 
-#: prefs.js:565
+#: prefs.js:660
 msgid "Fields must be filled"
 msgstr ""
 
-#: prefs.js:581
+#: prefs.js:680
 msgid "Please insert valid secret key"
 msgstr ""
 
-#: prefs.js:582
+#: prefs.js:681
 msgid "Please insert a username"
+msgstr ""
+
+#: prefs.js:684
+msgid "Otp already available"
 msgstr ""

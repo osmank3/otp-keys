@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-29 20:04+0300\n"
-"PO-Revision-Date: 2023-10-26 22:41+0300\n"
+"POT-Creation-Date: 2023-11-05 14:39+0300\n"
+"PO-Revision-Date: 2023-11-05 14:41+0300\n"
 "Last-Translator: Osman Karagöz <osmank3@gmail.com>\n"
 "Language-Team: \n"
 "Language: tr\n"
@@ -18,82 +18,98 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#: extension.js:81
+#: extension.js:82
 msgid "Code copied to clipboard."
 msgstr "Kod panoya kopyalandı."
 
-#: extension.js:141
+#: extension.js:150 prefs.js:496
+msgid "Unlock Keyring"
+msgstr "Anahtarlığın Kilidin Aç"
+
+#: extension.js:163
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: prefs.js:224
+#: prefs.js:263
 msgid "Secrets"
 msgstr "Gizli Kodlar"
 
-#: prefs.js:322
+#: prefs.js:381
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: prefs.js:328
+#: prefs.js:387
 msgid "Show Notifications"
 msgstr "Bildirimleri Göster"
 
-#: prefs.js:335
+#: prefs.js:394
 msgid "Show Copy Icons"
 msgstr "Kopyalama Sembolünü Göster"
 
-#: prefs.js:412
+#: prefs.js:466
 msgid "Add Secret"
 msgstr "Gizli Kod Ekle"
 
-#: prefs.js:425
+#: prefs.js:477
+msgid "Import Secret"
+msgstr "İçe Aktar"
+
+#: prefs.js:510
 msgid "New Secret"
 msgstr "Yeni Gizli Kod"
 
-#: prefs.js:425
+#: prefs.js:510
 msgid "Edit Secret"
 msgstr "Gizli Kodu Düzenle"
 
-#: prefs.js:445
+#: prefs.js:530
 msgid "Username"
 msgstr "Kullanıcı Adı"
 
-#: prefs.js:446
+#: prefs.js:531
+msgid "Issuer"
+msgstr "Sağlayıcı"
+
+#: prefs.js:532
 msgid "Secret Code"
 msgstr "Gizli Kod"
 
-#: prefs.js:447
+#: prefs.js:533
 msgid "Epoc Time"
 msgstr "Zaman Aralığı"
 
-#: prefs.js:448
+#: prefs.js:534
 msgid "Digits"
 msgstr "Rakamlar"
 
-#: prefs.js:449
+#: prefs.js:535
 msgid "Algoritm"
 msgstr "Algoritma"
 
-#: prefs.js:466
+#: prefs.js:559
 msgid "30 seconds"
 msgstr "30 saniye"
 
-#: prefs.js:471
+#: prefs.js:564
 msgid "60 seconds"
 msgstr "60 saniye"
 
-#: prefs.js:554
+#: prefs.js:649
 msgid "Save"
 msgstr "Kaydet"
 
-#: prefs.js:565
+#: prefs.js:660
 msgid "Fields must be filled"
 msgstr "Alan doldurulmalı"
 
-#: prefs.js:581
+#: prefs.js:680
 msgid "Please insert valid secret key"
 msgstr "Lütfen geçerli bir gizli kod girin"
 
-#: prefs.js:582
+#: prefs.js:681
 msgid "Please insert a username"
 msgstr "Lütfen bir kullanıcı adı girin"
+
+#: prefs.js:684
+msgid "Otp already available"
+msgstr "Otp zaten mevcut"

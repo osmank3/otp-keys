@@ -29,25 +29,26 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import * as Totp from './totp.js';
+import * as OtpLib from './otplib.js';
 
-const SETTINGS_SECRETS = "secret-list";
+const SETTINGS_OTP_LIST = "secret-list";
 const SETTINGS_NOTIFY = "notifications";
 const SETTINGS_COPY_ICONS = "copy-icons";
 
 
-class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
+class OtpMenuItem extends PopupMenu.PopupBaseMenuItem {
     static {
         GObject.registerClass(this);
     }
 
-    constructor(secret, settings) {
+    constructor(otp, settings) {
         super();
 
-        this._secret = secret;
+        this._otp = otp;
         this._settings = settings;
 
         this.label = new St.Label({
-            text: secret.username,
+            text: otp.username,
             x_expand: true,
             y_align: Clutter.ActorAlign.CENTER,
         });
@@ -55,7 +56,7 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
         this.label_actor = this.label;
 
         let code = new St.Label({
-            text: this.human_readable_code(Totp.getCode(secret.secretcode, secret.digits, secret.epoctime, secret.hashlib)),
+            text: this.human_readable_code(Totp.getCode(otp.secret, otp.digits, otp.period, otp.algorithm)),
             y_align: Clutter.ActorAlign.CENTER,
         });
         this.add(code);
@@ -73,7 +74,7 @@ class SecretMenuItem extends PopupMenu.PopupBaseMenuItem {
 
     _copyToClipboard() {
         const clipboard = St.Clipboard.get_default();
-        let code = Totp.getCode(this._secret.secretcode, this._secret.digits, this._secret.epoctime, this._secret.hashlib);
+        let code = Totp.getCode(this._otp.secret, this._otp.digits, this._otp.period, this._otp.algorithm);
         clipboard.set_text(St.ClipboardType.PRIMARY, code);
         clipboard.set_text(St.ClipboardType.CLIPBOARD, code);
 
@@ -108,35 +109,56 @@ class Indicator extends PanelMenu.Button {
         }));
 
         this._changedId =
-            this._settings.connect(`changed::${SETTINGS_SECRETS}`,
-                () => this._sync());
+            this._settings.connect(`changed::${SETTINGS_OTP_LIST}`,
+                () => this._fillList());
 
-        this._sync();
+        this._otpList = [];
+        this._fillList();
     }
 
     _sync() {
-        this._secrets = [];
-        for (const stringSecret of this._settings.get_strv(SETTINGS_SECRETS)) {
-            const [secretcode, username, epoctime, digits, hashlib] = stringSecret.split(":");
-            const secret = {
-                "secretcode": secretcode,
-                "username": username,
-                "epoctime": epoctime,
-                "digits": digits,
-                "hashlib": hashlib
-            };
-            this._secrets.push(secret);
-        }
+        this._otpList = [];
+        for (let stringSecret of this._settings.get_strv(SETTINGS_OTP_LIST)) {
+            let otp = {}
+            let username = "";
+            if (stringSecret.split(":").length === 5) {
+                //migrate to new one
+                let [secret, username, period, digits, algorithm] = stringSecret.split(":");
+                otp = {
+                    "secret": secret,
+                    "username": username,
+                    "period": period,
+                    "digits": digits,
+                    "algorithm": algorithm,
+                    "issuer": "otp-key"
+                };
+                OtpLib.saveOtp(otp);
+                stringSecret = `${username}:${otp.issuer}`;
+            }
 
-        this._fillMenu();
+            let issuer = "otp-key";
+            [username, issuer] = stringSecret.split(":");
+            otp = OtpLib.getOtp(username, issuer);
+            if (typeof otp == "object")
+                this._otpList.push(otp);
+        }
     }
 
-    _fillMenu() {
+    _fillList() {
         this.menu.removeAll();
-        this._secrets.forEach(secret => {
-            let item = new SecretMenuItem(secret, this._settings);
-            this.menu.addMenuItem(item);
-        });
+        if (OtpLib.isKeyringUnlocked() === false) {
+            let unlockkeyring = new PopupMenu.PopupMenuItem(_("Unlock Keyring"));
+            unlockkeyring.connect('activate', () => {
+                OtpLib.unlockKeyring(this);
+            });
+            this.menu.addMenuItem(unlockkeyring);
+        } else {
+            this._sync();
+            this._otpList.forEach(otp => {
+                let item = new OtpMenuItem(otp, this._settings);
+                this.menu.addMenuItem(item);
+            });
+        }
 
         let preferences = new PopupMenu.PopupMenuItem(_("Preferences"));
         preferences.connect('activate', () => {
@@ -148,19 +170,19 @@ class Indicator extends PanelMenu.Button {
     _onOpenStateChanged(menu, open) {
         if (open) {
             if (this._delay == null) {
-                this._fillMenu();
+                this._fillList();
                 let interval = 30000 - (parseInt(new Date().getTime()) % 30000);
                 this._delay = GLib.timeout_add(
                     GLib.PRIORITY_DEFAULT,
                     interval,
                     () => {
-                        this._fillMenu();
+                        this._fillList();
                         if (this._repeater == null) {
                             this._repeater = GLib.timeout_add(
                                 GLib.PRIORITY_DEFAULT,
                                 30000,
                                 () => {
-                                    this._fillMenu();
+                                    this._fillList();
                                     return true;
                                 }
                             );
