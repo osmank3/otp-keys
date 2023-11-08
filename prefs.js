@@ -335,7 +335,8 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
     }
 
     _importNewOtp() {
-        //TODO Show import dialog
+        const dialog = new ImportOtpDilaog(this.get_root(), this._settings);
+        dialog.show();
     }
 
     _editOtp(otp) {
@@ -682,6 +683,106 @@ class NewSecretDialog extends Gtk.Dialog {
             if (e === "Otp already available") {
                 this.usernameEntry.set_text("");
                 this.usernameEntry.set_placeholder_text(_("Otp already available"));
+            }
+        }
+    }
+}
+
+class ImportOtpDilaog extends Gtk.Dialog{
+    static {
+        GObject.registerClass(this);
+
+        this.install_action("otp.save", null, self => self._saveNewSecret());
+    }
+
+    constructor(parent, settings) {
+        super({
+            title: _("Import Secret"),
+            transient_for: parent,
+            modal: true,
+            use_header_bar: true,
+        });
+
+        this._settings = settings;
+        
+        this.main = new Gtk.Grid({
+            margin_top: 10,
+            margin_bottom: 10,
+            margin_start: 10,
+            margin_end: 10,
+            row_spacing: 12,
+            column_spacing: 18,
+            column_homogeneous: false,
+            row_homogeneous: false
+        });
+
+        let otpLabel = new Gtk.Label({label: "Secret URL", halign: Gtk.Align.START});
+        
+        this.otpEntry = new Gtk.Entry({
+            halign: Gtk.Align.END,
+            editable: true,
+            visible: true,
+            width_chars: 50,
+            placeholder_text: "otpauth://..."
+        });
+
+        const addRow = ((main) => {
+            let row = 0;
+            return (label, input) => {
+                let inputWidget = input;
+
+                if (Array.isArray(input)) {
+                    inputWidget = new Gtk.Box({
+                        orientation: Gtk.Orientation.HORIZONTAL,
+                        halign: Gtk.Align.END
+                    });
+                    input.forEach(widget => {
+                        inputWidget.append(widget);
+                    });
+                }
+
+                if (label) {
+                    main.attach(label, 0, row, 1, 1);
+                    main.attach(inputWidget, 1, row, 1, 1);
+                }
+                else {
+                    main.attach(inputWidget, 0, row, 2, 1);
+                }
+
+                row++;
+            };
+        })(this.main);
+
+        addRow(otpLabel, this.otpEntry);
+        
+        this.set_child(this.main);
+
+        this.saveButton = new Gtk.Button({
+            label: _("Save"),
+            action_name: "otp.save",
+        });
+
+        this.add_action_widget(this.saveButton, 1);
+    }
+
+    _saveNewSecret() {
+        let otpList = new OtpList(this._settings);
+        try {
+            if (this.otpEntry.get_text() === "")
+                throw Error(_("Fields must be filled"));
+            let otp = OtpLib.parseURL(this.otpEntry.get_text());
+            Totp.base32hex(otp.secret);//Check secret code
+            
+            if (OtpLib.getOtp(otp.username, otp.issuer) != null) //test availability
+                throw Error(_("Otp already available"));
+            OtpLib.saveOtp(otp);
+            otpList.append(otp);
+            this.close();
+        } catch (e) {
+            this.otpEntry.set_text("");
+            this.otpEntry.set_placeholder_text(_("Please insert valid otp link"));
+            if (e != null) {
+                this.otpEntry.set_placeholder_text(e.message);
             }
         }
     }
