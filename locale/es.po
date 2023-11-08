@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-08 12:09+0300\n"
+"POT-Creation-Date: 2023-11-08 14:10+0300\n"
 "PO-Revision-Date: 2023-10-28T12:36:51+02:00\n"
 "Last-Translator: Óscar García Amor <ogarcia@connectical.com>\n"
 "Language-Team: \n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Code copied to clipboard."
 msgstr "Código copiado en el portapapeles."
 
-#: extension.js:152 prefs.js:507
+#: extension.js:152 prefs.js:535
 msgid "Unlock Keyring"
 msgstr ""
 
@@ -29,94 +29,110 @@ msgstr ""
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: prefs.js:261
+#: prefs.js:276
 msgid "Secrets"
 msgstr "Secretos"
 
-#: prefs.js:380
+#: prefs.js:395
 msgid "Settings"
 msgstr "Ajustes"
 
-#: prefs.js:385
+#: prefs.js:400
 msgid "Show Notifications"
 msgstr "Mostrar notificaciones"
 
-#: prefs.js:388
+#: prefs.js:403
 msgid "Show Copy Icons"
 msgstr "Mostrar los iconos de copiar"
 
-#: prefs.js:477
+#: prefs.js:444
+msgid "Copy"
+msgstr ""
+
+#: prefs.js:454
+msgid "Edit"
+msgstr ""
+
+#: prefs.js:464
+msgid "Export"
+msgstr ""
+
+#: prefs.js:474
+msgid "Remove"
+msgstr ""
+
+#: prefs.js:505
 msgid "Add Secret"
 msgstr "Añadir secreto"
 
-#: prefs.js:488 prefs.js:710
+#: prefs.js:516 prefs.js:738
 #, fuzzy
 msgid "Import Secret"
 msgstr "Editar Secreto"
 
-#: prefs.js:521
+#: prefs.js:549
 msgid "New Secret"
 msgstr "Nuevo secreto"
 
-#: prefs.js:521
+#: prefs.js:549
 msgid "Edit Secret"
 msgstr "Editar Secreto"
 
-#: prefs.js:541
+#: prefs.js:569
 msgid "Username"
 msgstr "Nombre de usuario"
 
-#: prefs.js:542
+#: prefs.js:570
 msgid "Issuer"
 msgstr ""
 
-#: prefs.js:543
+#: prefs.js:571
 msgid "Secret Code"
 msgstr "Código secreto"
 
-#: prefs.js:544
+#: prefs.js:572
 msgid "Epoc Time"
 msgstr "Intervalo de tiempo"
 
-#: prefs.js:545
+#: prefs.js:573
 msgid "Digits"
 msgstr "Dígitos"
 
-#: prefs.js:546
+#: prefs.js:574
 msgid "Algoritm"
 msgstr "Algoritmo"
 
-#: prefs.js:570
+#: prefs.js:598
 msgid "30 seconds"
 msgstr "30 segundos"
 
-#: prefs.js:575
+#: prefs.js:603
 msgid "60 seconds"
 msgstr "60 segundos"
 
-#: prefs.js:660 prefs.js:771
+#: prefs.js:688 prefs.js:799
 msgid "Save"
 msgstr "Guardar"
 
-#: prefs.js:671 prefs.js:782
+#: prefs.js:699 prefs.js:810
 msgid "Fields must be filled"
 msgstr "Los campos deben rellenarse"
 
-#: prefs.js:691
+#: prefs.js:719
 msgid "Please insert valid secret key"
 msgstr "Por favor, introduce una clave secreta válida"
 
-#: prefs.js:692
+#: prefs.js:720
 msgid "Please insert a username"
 msgstr "Por favor, introduce un nombre de usuario"
 
 #. Check secret code
 #. test availability
-#: prefs.js:695 prefs.js:787
+#: prefs.js:723 prefs.js:815
 msgid "Otp already available"
 msgstr ""
 
-#: prefs.js:793
+#: prefs.js:821
 #, fuzzy
 msgid "Please insert valid otp link"
 msgstr "Por favor, introduce una clave secreta válida"

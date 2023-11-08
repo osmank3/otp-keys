@@ -143,6 +143,20 @@ class OtpList extends GObject.Object {
         this.items_changed(pos, 1, 0);
     }
 
+    export(otpParams) {
+        const clipboard = Gdk.Display.get_default().get_clipboard();
+        const clipboardPrimary = Gdk.Display.get_default().get_primary_clipboard();
+
+        this.otpList.forEach((otp) => {
+            if (otp.username === otpParams[0] & otp.issuer === otpParams[1]) {
+                let otpUrl = OtpLib.makeURL(otp);
+                clipboard.set(otpUrl);
+                clipboardPrimary.set(otpUrl);
+                return;
+            }
+        });
+    }
+
     copyToClipboard(otpParams) {
         const clipboard = Gdk.Display.get_default().get_clipboard();
         const clipboardPrimary = Gdk.Display.get_default().get_primary_clipboard();
@@ -250,6 +264,7 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
 
         this.install_action("otpList.add", null, self => self._addNewOtp());
         this.install_action("otpList.import", null, self => self._importNewOtp());
+        this.install_action("otpList.export", "as", (self, name, param) => self.otpList.export(param.get_strv()));
         this.install_action("otpList.remove", "as", (self, name, param) => self.otpList.remove(param.get_strv()));
         this.install_action("otpList.copy", "as", (self, name, param) => self.otpList.copyToClipboard(param.get_strv()));
         this.install_action("otpList.edit", "as", (self, name, param) => self._editOtp(param.get_strv()));
@@ -426,6 +441,7 @@ class OtpRow extends Adw.ActionRow {
             action_name: 'otpList.copy',
             action_target: new GLib.Variant('as', [otp.username, otp.issuer]),
             valign: Gtk.Align.CENTER,
+            tooltip_text: _("Copy")
         })
         this.add_suffix(code)
 
@@ -435,17 +451,29 @@ class OtpRow extends Adw.ActionRow {
             icon_name: 'document-edit-symbolic',
             has_frame: false,
             valign: Gtk.Align.CENTER,
+            tooltip_text: _("Edit")
         });
         this.add_suffix(edit);
 
-        const button = new Gtk.Button({
+        const exportBtn = new Gtk.Button({
+            action_name: 'otpList.export',
+            action_target: new GLib.Variant('as', [otp.username, otp.issuer]),
+            icon_name: 'document-revert-symbolic-rtl',
+            has_frame: false,
+            valign: Gtk.Align.CENTER,
+            tooltip_text: _("Export")
+        });
+        this.add_suffix(exportBtn);
+
+        const remove = new Gtk.Button({
             action_name: 'otpList.remove',
             action_target: new GLib.Variant('as', [otp.username, otp.issuer]),
             icon_name: 'edit-delete-symbolic',
             has_frame: false,
             valign: Gtk.Align.CENTER,
+            tooltip_text: _("Remove")
         });
-        this.add_suffix(button);
+        this.add_suffix(remove);
     }
 
     human_readable_code(code) {
