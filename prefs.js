@@ -99,6 +99,7 @@ class OtpList extends GObject.Object {
     constructor(settings) {
         super();
         this._settings = settings;
+        this._otpLib = new OtpLib.OtpLib();
         this.otpList = [];
         this.changedId =
             this._settings.connect(`changed::${SETTINGS_OTP_LIST}`,
@@ -136,7 +137,7 @@ class OtpList extends GObject.Object {
         if (pos < 0)
             return;
 
-        OtpLib.removeOtp(this.otpList[pos]);
+        this._otpLib.removeOtp(this.otpList[pos]);
         this.otpList.splice(pos, 1);
         this._saveOtpList();
 
@@ -149,7 +150,7 @@ class OtpList extends GObject.Object {
 
         this.otpList.forEach((otp) => {
             if (otp.username === otpParams[0] & otp.issuer === otpParams[1]) {
-                let otpUrl = OtpLib.makeURL(otp);
+                let otpUrl = this._otpLib.makeURL(otp);
                 clipboard.set(otpUrl);
                 clipboardPrimary.set(otpUrl);
                 return;
@@ -195,7 +196,7 @@ class OtpList extends GObject.Object {
 
         this.otpList = [];
         let migrated = false;
-        if (OtpLib.isKeyringUnlocked()) {
+        if (this._otpLib.isKeyringUnlocked()) {
             for (let stringSecret of this._settings.get_strv(SETTINGS_OTP_LIST)) {
                 let otp = {};
                 let username = "";
@@ -210,14 +211,14 @@ class OtpList extends GObject.Object {
                         "algorithm": algorithm,
                         "issuer": "otp-key"
                     };
-                    OtpLib.saveOtp(otp);
+                    this._otpLib.saveOtp(otp);
                     stringSecret = `${username}:${otp.issuer}`;
                     migrated = true;
                 }
 
                 let issuer = "otp-key";
                 [username, issuer] = stringSecret.split(":");
-                otp = OtpLib.getOtp(username, issuer);
+                otp = this._otpLib.getOtp(username, issuer);
                 if (typeof otp == "object")
                     this.otpList.push(new Otp(otp));
             }
@@ -280,6 +281,7 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
         this.connect('destroy', this._onDestroy.bind(this));
 
         this._settings = settings;
+        this._otpLib = new OtpLib.OtpLib();
         this.otpList = new OtpList(settings);
 
         this._list = new Gtk.ListBox({
@@ -318,7 +320,7 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
         const store = new Gio.ListStore({item_type: Gio.ListModel});
         const listModel = new Gtk.FlattenListModel({model: store});
 
-        if (OtpLib.isKeyringUnlocked()) {
+        if (this._otpLib.isKeyringUnlocked()) {
             this.otpList._sync();
             store.append(this.otpList);
         }
@@ -329,7 +331,7 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
             this._list.remove(this._list.get_last_child());
         }
 
-        if (OtpLib.isKeyringUnlocked()) {
+        if (this._otpLib.isKeyringUnlocked()) {
             this._list.bind_model(listModel, item => {
                 return item instanceof NewItem
                     ? new NewOtpRow()
@@ -353,12 +355,12 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
     }
 
     _editOtp(otp) {
-        const dialog = new NewSecretDialog(this.get_root(), this._settings, OtpLib.getOtp(otp[0], otp[1]));
+        const dialog = new NewSecretDialog(this.get_root(), this._settings, this._otpLib.getOtp(otp[0], otp[1]));
         dialog.show();
     }
 
     _unlockKeyring() {
-        OtpLib.unlockKeyring(this);
+        this._otpLib.unlockKeyring(this);
         this._fillList();
     }
 
@@ -553,6 +555,7 @@ class NewSecretDialog extends Gtk.Dialog {
         });
 
         this._settings = settings;
+        this._otpLib = new OtpLib.OtpLib();
         this.editMode = false;
 
         this.main = new Gtk.Grid({
@@ -709,9 +712,9 @@ class NewSecretDialog extends Gtk.Dialog {
             if (this.editMode) {
                 otpList.remove([this.originalOtp.username, this.originalOtp.issuer]);
             }
-            if (OtpLib.getOtp(otp.username, otp.issuer) != null) //test availability
+            if (this._otpLib.getOtp(otp.username, otp.issuer) != null) //test availability
                 throw "Otp already available";
-            OtpLib.saveOtp(otp);
+            this._otpLib.saveOtp(otp);
             otpList.append(otp);
             this.close();
         } catch (e) {
@@ -742,6 +745,7 @@ class ImportOtpDilaog extends Gtk.Dialog{
         });
 
         this._settings = settings;
+        this._otpLib = new OtpLib.OtpLib();
         
         this.main = new Gtk.Grid({
             margin_top: 10,
@@ -808,12 +812,12 @@ class ImportOtpDilaog extends Gtk.Dialog{
         try {
             if (this.otpEntry.get_text() === "")
                 throw Error(_("Fields must be filled"));
-            let otp = OtpLib.parseURL(this.otpEntry.get_text());
+            let otp = this._otpLib.parseURL(this.otpEntry.get_text());
             Totp.base32hex(otp.secret);//Check secret code
             
-            if (OtpLib.getOtp(otp.username, otp.issuer) != null) //test availability
+            if (this._otpLib.getOtp(otp.username, otp.issuer) != null) //test availability
                 throw Error(_("Otp already available"));
-            OtpLib.saveOtp(otp);
+            this._otpLib.saveOtp(otp);
             otpList.append(otp);
             this.close();
         } catch (e) {

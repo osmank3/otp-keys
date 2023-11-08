@@ -104,6 +104,7 @@ class Indicator extends PanelMenu.Button {
 
         this._parent = parent;
         this._settings = settings;
+        this._otpLib = new OtpLib.OtpLib();
 
         this.add_child(new St.Icon({
             icon_name: 'dialog-password-symbolic',
@@ -134,13 +135,13 @@ class Indicator extends PanelMenu.Button {
                     "algorithm": algorithm,
                     "issuer": "otp-key"
                 };
-                OtpLib.saveOtp(otp);
+                this._otpLib.saveOtp(otp);
                 stringSecret = `${username}:${otp.issuer}`;
             }
 
             let issuer = "otp-key";
             [username, issuer] = stringSecret.split(":");
-            otp = OtpLib.getOtp(username, issuer);
+            otp = this._otpLib.getOtp(username, issuer);
             if (typeof otp == "object")
                 this._otpList.push(otp);
         }
@@ -148,10 +149,10 @@ class Indicator extends PanelMenu.Button {
 
     _fillList() {
         this.menu.removeAll();
-        if (OtpLib.isKeyringUnlocked() === false) {
+        if (this._otpLib.isKeyringUnlocked() === false) {
             let unlockkeyring = new PopupMenu.PopupMenuItem(_("Unlock Keyring"));
             unlockkeyring.connect('activate', () => {
-                OtpLib.unlockKeyring(this);
+                this._otpLib.unlockKeyring(this);
             });
             this.menu.addMenuItem(unlockkeyring);
         } else {
