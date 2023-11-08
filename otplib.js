@@ -29,12 +29,8 @@ export function removeOtp(otp) {
 
 export function isKeyringUnlocked() {
     const service = Secret.Service.get_sync(Secret.ServiceFlags.LOAD_COLLECTIONS, null);
-    for (let col of service.get_collections()) {
-        if (col.label === "Login") {
-            return !col.locked;
-        }
-    }
-    return false;
+    let cols = service.get_collections()
+    return !cols[0].locked;//Default keyring
 }
 
 export function unlockKeyring(parent) {

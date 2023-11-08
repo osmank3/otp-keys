@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-05 14:39+0300\n"
+"POT-Creation-Date: 2023-11-08 11:20+0300\n"
 "PO-Revision-Date: 2023-04-30 17:59+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: \n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Code copied to clipboard."
 msgstr "De code is gekopieerd naar het klembord."
 
-#: extension.js:150 prefs.js:496
+#: extension.js:150 prefs.js:497
 msgid "Unlock Keyring"
 msgstr ""
 
@@ -34,84 +34,91 @@ msgstr "Voorkeuren"
 msgid "Secrets"
 msgstr "Geheimen"
 
-#: prefs.js:381
+#: prefs.js:382
 msgid "Settings"
 msgstr ""
 
-#: prefs.js:387
+#: prefs.js:388
 msgid "Show Notifications"
 msgstr ""
 
-#: prefs.js:394
+#: prefs.js:395
 msgid "Show Copy Icons"
 msgstr ""
 
-#: prefs.js:466
+#: prefs.js:467
 msgid "Add Secret"
 msgstr "Geheim toevoegen"
 
-#: prefs.js:477
+#: prefs.js:478 prefs.js:700
 #, fuzzy
 msgid "Import Secret"
 msgstr "Nieuw geheim"
 
-#: prefs.js:510
+#: prefs.js:511
 msgid "New Secret"
 msgstr "Nieuw geheim"
 
-#: prefs.js:510
+#: prefs.js:511
 #, fuzzy
 msgid "Edit Secret"
 msgstr "Nieuw geheim"
 
-#: prefs.js:530
+#: prefs.js:531
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: prefs.js:531
+#: prefs.js:532
 msgid "Issuer"
 msgstr ""
 
-#: prefs.js:532
+#: prefs.js:533
 msgid "Secret Code"
 msgstr "Geheime code"
 
-#: prefs.js:533
+#: prefs.js:534
 msgid "Epoc Time"
 msgstr "Unix-tijd"
 
-#: prefs.js:534
+#: prefs.js:535
 msgid "Digits"
 msgstr "Getallen"
 
-#: prefs.js:535
+#: prefs.js:536
 msgid "Algoritm"
 msgstr "Algoritme"
 
-#: prefs.js:559
+#: prefs.js:560
 msgid "30 seconds"
 msgstr "30 seconden"
 
-#: prefs.js:564
+#: prefs.js:565
 msgid "60 seconds"
 msgstr "60 seconden"
 
-#: prefs.js:649
+#: prefs.js:650 prefs.js:761
 msgid "Save"
 msgstr "Opslaan"
 
-#: prefs.js:660
+#: prefs.js:661 prefs.js:772
 msgid "Fields must be filled"
 msgstr "Vul alle velden in"
 
-#: prefs.js:680
+#: prefs.js:681
 msgid "Please insert valid secret key"
 msgstr "Voer een geldige geheime sleutel in"
 
-#: prefs.js:681
+#: prefs.js:682
 msgid "Please insert a username"
 msgstr "Voer een gebruikersnaam in"
 
-#: prefs.js:684
+#. Check secret code
+#. test availability
+#: prefs.js:685 prefs.js:777
 msgid "Otp already available"
 msgstr ""
+
+#: prefs.js:783
+#, fuzzy
+msgid "Please insert valid otp link"
+msgstr "Voer een geldige geheime sleutel in"
