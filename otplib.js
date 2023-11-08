@@ -1,5 +1,4 @@
-import GLib from 'gi://GLib';
-import Secret from 'gi://Secret';
+const { GLib, Secret } = imports.gi;
 
 const OTP_SCHEMA = new Secret.Schema(
     "org.gnome.shell.extensions.otp-keys",
@@ -10,34 +9,30 @@ const OTP_SCHEMA = new Secret.Schema(
     }
 );
 
-export function getOtp(username, issuer){
+function getOtp(username, issuer){
     let attr = {"username": username, "issuer": issuer};
     let otpURL = Secret.password_lookup_sync(OTP_SCHEMA, attr, null);
     return otpURL === null ? null : parseURL(otpURL);
 }
 
-export function saveOtp(otp) {
+function saveOtp(otp) {
     let attr = {"username": otp.username, "issuer": otp.issuer};
     return Secret.password_store_sync(OTP_SCHEMA, attr,
         Secret.COLLECTION_DEFAULT, "otp-key", makeURL(otp), null);
 }
 
-export function removeOtp(otp) {
+function removeOtp(otp) {
     let attr = {"username": otp.username, "issuer": otp.issuer};
     return Secret.password_clear_sync(OTP_SCHEMA, attr, null);
 }
 
-export function isKeyringUnlocked() {
+function isKeyringUnlocked() {
     const service = Secret.Service.get_sync(Secret.ServiceFlags.LOAD_COLLECTIONS, null);
-    for (let col of service.get_collections()) {
-        if (col.label === "Login") {
-            return !col.locked;
-        }
-    }
-    return false;
+    let cols = service.get_collections()
+    return !cols[0].locked;//Default keyring
 }
 
-export function unlockKeyring(parent) {
+function unlockKeyring(parent) {
     //Add test key to keyring for unlocking keyring
     let attr = {"username": "username", "issuer": "issuer"};
     Secret.password_store(OTP_SCHEMA, attr,
@@ -49,7 +44,7 @@ export function unlockKeyring(parent) {
     });
 }
 
-export function parseURL(urlString) {
+function parseURL(urlString) {
     let otp = {
         "username": "",
         "secret": "",
@@ -79,7 +74,7 @@ export function parseURL(urlString) {
     }
 }
 
-export function makeURL(otp) {
+function makeURL(otp) {
     return "otpauth://totp/" + otp["username"] + "?" +
         "secret=" + otp.secret +
         "&issuer=" + otp.issuer +

@@ -18,18 +18,20 @@
 
 /* exported init */
 
-import St from 'gi://St';
-import GLib from 'gi://GLib';
-import Clutter from 'gi://Clutter';
-import GObject from 'gi://GObject';
+const GETTEXT_DOMAIN = 'otp-keys';
 
-import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
-import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
-import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+const { GObject, St, Clutter, GLib } = imports.gi;
 
-import * as Totp from './totp.js';
-import * as OtpLib from './otplib.js';
+const ExtensionUtils = imports.misc.extensionUtils;
+const Main = imports.ui.main;
+const PanelMenu = imports.ui.panelMenu;
+const PopupMenu = imports.ui.popupMenu;
+
+const _ = ExtensionUtils.gettext;
+
+const ThisExtension = ExtensionUtils.getCurrentExtension();
+const Totp = ThisExtension.imports.totp;
+const OtpLib = ThisExtension.imports.otplib;
 
 const SETTINGS_OTP_LIST = "secret-list";
 const SETTINGS_NOTIFY = "notifications";
@@ -162,7 +164,7 @@ class Indicator extends PanelMenu.Button {
 
         let preferences = new PopupMenu.PopupMenuItem(_("Preferences"));
         preferences.connect('activate', () => {
-            this._parent.openPreferences();
+            ExtensionUtils.openPrefs();
         });
         this.menu.addMenuItem(preferences);
     }
@@ -218,9 +220,14 @@ class Indicator extends PanelMenu.Button {
 });
 
 
-export default class OtpKeys extends Extension {
+class Extension {
+    constructor(uuid) {
+        this._uuid = uuid;
+        ExtensionUtils.initTranslations(GETTEXT_DOMAIN);
+    }
+
     enable() {
-        this._indicator = new Indicator(this, this.getSettings());
+        this._indicator = new Indicator(ThisExtension, ExtensionUtils.getSettings("org.gnome.shell.extensions.otp-keys"));
         Main.panel.addToStatusArea(this._uuid, this._indicator);
     }
 
@@ -228,4 +235,8 @@ export default class OtpKeys extends Extension {
         this._indicator.destroy();
         this._indicator = null;
     }
+}
+
+function init(meta) {
+    return new Extension(meta.uuid);
 }

@@ -1,15 +1,13 @@
 // -*- mode: js2; indent-tabs-mode: nil; js2-basic-offset: 4 -*-
-import Adw from 'gi://Adw';
-import Gio from 'gi://Gio';
-import Gdk from 'gi://Gdk';
-import Gtk from 'gi://Gtk';
-import GLib from 'gi://GLib';
-import GObject from 'gi://GObject';
+const { Adw, Gio, GLib, GObject, Gtk, Gdk } = imports.gi;
 
-import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
+const Totp = Me.imports.totp;
+const OtpLib = Me.imports.otplib;
 
-import * as Totp from './totp.js';
-import * as OtpLib from './otplib.js';
+const Gettext = imports.gettext;
+const _ = Gettext.domain('otp-keys').gettext;
 
 const SETTINGS_OTP_LIST = "secret-list";
 const SETTINGS_NOTIFY = "notifications";
@@ -384,19 +382,31 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup{
 
         this._settings = settings;
 
-        this.showNotificationSwitch = new Adw.SwitchRow({
-            title: _("Show Notifications")
-        })
+        this.showNotificationSwitch = new SwitchRow(_("Show Notifications"), SETTINGS_NOTIFY, settings)
         this.add(this.showNotificationSwitch);
 
-        this._settings.bind(SETTINGS_NOTIFY, this.showNotificationSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
-
-        this.showCopyIconsSwitch = new Adw.SwitchRow({
-            title: _("Show Copy Icons")
-        })
+        this.showCopyIconsSwitch = new SwitchRow(_("Show Copy Icons"), SETTINGS_COPY_ICONS, settings)
         this.add(this.showCopyIconsSwitch);
+    }
+}
 
-        this._settings.bind(SETTINGS_COPY_ICONS, this.showCopyIconsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
+class SwitchRow extends Adw.ActionRow{
+    static {
+        GObject.registerClass(this)
+    }
+
+    constructor(title, action, settings) {
+        super({
+            activatable: false,
+            title: title
+        });
+
+        const sw = new Gtk.Switch({
+            valign: Gtk.Align.CENTER,
+        });
+        this.add_suffix(sw);
+
+        settings.bind(action, sw, 'active', Gio.SettingsBindFlags.DEFAULT);
     }
 }
 
@@ -788,8 +798,14 @@ class ImportOtpDilaog extends Gtk.Dialog{
     }
 }
 
-export default class OtpKeysPrefs extends ExtensionPreferences {
-    getPreferencesWidget() {
-        return new OtpKeysSettingsPageWidget(this.getSettings());
-    }
+function init() {
+    let localeDir = Me.dir.get_child('locale');
+    Gettext.bindtextdomain('otp-keys', localeDir.get_path());
+}
+
+/**
+ * @returns {Gtk.Widget} - the prefs widget
+ */
+function buildPrefsWidget() {
+    return new OtpKeysSettingsPageWidget(ExtensionUtils.getSettings("org.gnome.shell.extensions.otp-keys"));
 }

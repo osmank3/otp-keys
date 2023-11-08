@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-08 11:20+0300\n"
+"POT-Creation-Date: 2023-11-08 12:09+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,104 +17,104 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:82
+#: extension.js:84
 msgid "Code copied to clipboard."
 msgstr ""
 
-#: extension.js:150 prefs.js:497
+#: extension.js:152 prefs.js:507
 msgid "Unlock Keyring"
 msgstr ""
 
-#: extension.js:163
+#: extension.js:165
 msgid "Preferences"
 msgstr ""
 
-#: prefs.js:263
+#: prefs.js:261
 msgid "Secrets"
 msgstr ""
 
-#: prefs.js:382
+#: prefs.js:380
 msgid "Settings"
 msgstr ""
 
-#: prefs.js:388
+#: prefs.js:385
 msgid "Show Notifications"
 msgstr ""
 
-#: prefs.js:395
+#: prefs.js:388
 msgid "Show Copy Icons"
 msgstr ""
 
-#: prefs.js:467
+#: prefs.js:477
 msgid "Add Secret"
 msgstr ""
 
-#: prefs.js:478 prefs.js:700
+#: prefs.js:488 prefs.js:710
 msgid "Import Secret"
 msgstr ""
 
-#: prefs.js:511
+#: prefs.js:521
 msgid "New Secret"
 msgstr ""
 
-#: prefs.js:511
+#: prefs.js:521
 msgid "Edit Secret"
 msgstr ""
 
-#: prefs.js:531
+#: prefs.js:541
 msgid "Username"
 msgstr ""
 
-#: prefs.js:532
+#: prefs.js:542
 msgid "Issuer"
 msgstr ""
 
-#: prefs.js:533
+#: prefs.js:543
 msgid "Secret Code"
 msgstr ""
 
-#: prefs.js:534
+#: prefs.js:544
 msgid "Epoc Time"
 msgstr ""
 
-#: prefs.js:535
+#: prefs.js:545
 msgid "Digits"
 msgstr ""
 
-#: prefs.js:536
+#: prefs.js:546
 msgid "Algoritm"
 msgstr ""
 
-#: prefs.js:560
+#: prefs.js:570
 msgid "30 seconds"
 msgstr ""
 
-#: prefs.js:565
+#: prefs.js:575
 msgid "60 seconds"
 msgstr ""
 
-#: prefs.js:650 prefs.js:761
+#: prefs.js:660 prefs.js:771
 msgid "Save"
 msgstr ""
 
-#: prefs.js:661 prefs.js:772
+#: prefs.js:671 prefs.js:782
 msgid "Fields must be filled"
 msgstr ""
 
-#: prefs.js:681
+#: prefs.js:691
 msgid "Please insert valid secret key"
 msgstr ""
 
-#: prefs.js:682
+#: prefs.js:692
 msgid "Please insert a username"
 msgstr ""
 
 #. Check secret code
 #. test availability
-#: prefs.js:685 prefs.js:777
+#: prefs.js:695 prefs.js:787
 msgid "Otp already available"
 msgstr ""
 
-#: prefs.js:783
+#: prefs.js:793
 msgid "Please insert valid otp link"
 msgstr ""

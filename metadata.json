@@ -6,7 +6,7 @@
   "gettext-domain": "otp-keys",
   "settings-schema": "org.gnome.shell.extensions.otp-keys",
   "shell-version": [
-    "45"
+    "42", "43", "44"
   ],
-  "version": 13
+  "version": 14
 }
