@@ -3,7 +3,6 @@ import GLib from 'gi://GLib';
 //Converts a base32 string into a hex string. The padding is optional
 //Based on the Pure JavaScript TOTP Code generator by Kevin Gut https://cable.ayra.ch/totp/
 export function base32hex(data) {
-    console.log("Nedir la bu!: " + data)
     //Basic argument validation
     if (typeof(data) !== typeof("")) {
         throw new Error("Argument to base32hex() is not a string");
