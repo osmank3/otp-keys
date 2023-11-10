@@ -59,12 +59,12 @@ var OtpLib = class {
         let uri = GLib.Uri.parse(decodeURIComponent(urlString), GLib.UriFlags.NONE);
         if (uri.get_scheme() === "otpauth" & uri.get_host() === "totp") {
             let params = GLib.Uri.parse_params(uri.get_query(), -1, "&", GLib.UriParamsFlags.NONE);
-            otp.secret = Object.keys(params).includes("secret") == true ? params.secret : "";
+            otp.secret = Object.keys(params).includes("secret") === true ? params.secret : "";
             otp.username = uri.get_path().replace("/", "");
-            otp.issuer = Object.keys(params).includes("issuer") == true ? params.issuer : "otp-keys";
-            otp.epoctime = Object.keys(params).includes("period") == true ? params.period : 30;
-            otp.digits = Object.keys(params).includes("digits") == true ? params.digits : 6;
-            otp.hashlib = Object.keys(params).includes("algorithm") == true ? params.algorithm.toLowerCase() : "sha1";
+            otp.issuer = Object.keys(params).includes("issuer") === true ? params.issuer : "otp-keys";
+            otp.period = Object.keys(params).includes("period") === true ? params.period : 30;
+            otp.digits = Object.keys(params).includes("digits") === true ? params.digits : 6;
+            otp.algorithm = Object.keys(params).includes("algorithm") === true ? params.algorithm.toLowerCase() : "sha1";
             if (otp.secretcode != "") {
                 return otp;
             }
