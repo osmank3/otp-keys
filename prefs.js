@@ -15,6 +15,36 @@ const SETTINGS_OTP_LIST = "secret-list";
 const SETTINGS_NOTIFY = "notifications";
 const SETTINGS_COPY_ICONS = "copy-icons";
 
+class OtpRoot {
+    constructor(extension) {
+        this.extension = extension;
+        this.window = null;
+        this.settings = extension.getSettings();
+        this.lib = new OtpLib();
+        this.list = new OtpList(this);
+    }
+
+    setWindow(window) {
+        this.window = window;
+    }
+
+    showToast(text) {
+        if (this.window) {
+            let toast = new Adw.Toast({
+                title: text,
+            });
+            this.window.add_toast(toast);
+        }
+    }
+
+    copyToClipboards(text) {
+        const clipboard = Gdk.Display.get_default().get_clipboard();
+        const clipboardPrimary = Gdk.Display.get_default().get_primary_clipboard();
+
+        clipboard.set(text);
+        clipboardPrimary.set(text);
+    }
+}
 
 class NewItem extends GObject.Object {}
 GObject.registerClass(NewItem);
@@ -98,13 +128,14 @@ class OtpList extends GObject.Object {
         GObject.registerClass(this);
     }
 
-    constructor(settings) {
+    constructor(otpRoot) {
         super();
-        this._settings = settings;
-        this._otpLib = new OtpLib();
+
+        this.otpRoot = otpRoot;
+
         this.otpList = [];
         this.changedId =
-            this._settings.connect(`changed::${SETTINGS_OTP_LIST}`,
+            this.otpRoot.settings.connect(`changed::${SETTINGS_OTP_LIST}`,
                 () => this._sync());
         this._sync();
     }
@@ -139,7 +170,7 @@ class OtpList extends GObject.Object {
         if (pos < 0)
             return;
 
-        this._otpLib.removeOtp(this.otpList[pos]);
+        this.otpRoot.lib.removeOtp(this.otpList[pos]);
         this.otpList.splice(pos, 1);
         this._saveOtpList();
 
@@ -147,28 +178,22 @@ class OtpList extends GObject.Object {
     }
 
     export(otpParams) {
-        const clipboard = Gdk.Display.get_default().get_clipboard();
-        const clipboardPrimary = Gdk.Display.get_default().get_primary_clipboard();
-
         this.otpList.forEach((otp) => {
             if (otp.username === otpParams[0] & otp.issuer === otpParams[1]) {
-                let otpUrl = this._otpLib.makeURL(otp);
-                clipboard.set(otpUrl);
-                clipboardPrimary.set(otpUrl);
+                let otpUrl = this.otpRoot.lib.makeURL(otp);
+                this.otpRoot.copyToClipboards(otpUrl);
+                this.otpRoot.showToast(_("Otp link exported to clipboard."));
                 return;
             }
         });
     }
 
     copyToClipboard(otpParams) {
-        const clipboard = Gdk.Display.get_default().get_clipboard();
-        const clipboardPrimary = Gdk.Display.get_default().get_primary_clipboard();
-
         this.otpList.forEach((otp) => {
             if (otp.username === otpParams[0] & otp.issuer === otpParams[1]) {
                 let code = Totp.getCode(otp.secret, otp.digits, otp.period, otp.algorithm);
-                clipboard.set(code);
-                clipboardPrimary.set(code);
+                this.otpRoot.copyToClipboards(code);
+                this.otpRoot.showToast(_("Code copied to clipboard."));
                 return;
             }
         });
@@ -185,12 +210,12 @@ class OtpList extends GObject.Object {
     }
 
     _saveOtpList() {
-        this._settings.block_signal_handler(this.changedId);
-        this._settings.set_strv(
+        this.otpRoot.settings.block_signal_handler(this.changedId);
+        this.otpRoot.settings.set_strv(
             SETTINGS_OTP_LIST,
             this.otpList.map(otp => `${otp.username}:${otp.issuer}`)
         );
-        this._settings.unblock_signal_handler(this.changedId)
+        this.otpRoot.settings.unblock_signal_handler(this.changedId)
     }
 
     _sync() {
@@ -198,8 +223,8 @@ class OtpList extends GObject.Object {
 
         this.otpList = [];
         let migrated = false;
-        if (this._otpLib.isKeyringUnlocked()) {
-            for (let stringSecret of this._settings.get_strv(SETTINGS_OTP_LIST)) {
+        if (this.otpRoot.lib.isKeyringUnlocked()) {
+            for (let stringSecret of this.otpRoot.settings.get_strv(SETTINGS_OTP_LIST)) {
                 let otp = {};
                 let username = "";
                 if (stringSecret.split(":").length === 5) {
@@ -213,14 +238,14 @@ class OtpList extends GObject.Object {
                         "algorithm": algorithm,
                         "issuer": "otp-key"
                     };
-                    this._otpLib.saveOtp(otp);
+                    this.otpRoot.lib.saveOtp(otp);
                     stringSecret = `${username}:${otp.issuer}`;
                     migrated = true;
                 }
 
                 let issuer = "otp-key";
                 [username, issuer] = stringSecret.split(":");
-                otp = this._otpLib.getOtp(username, issuer);
+                otp = this.otpRoot.lib.getOtp(username, issuer);
                 if (typeof otp == "object")
                     this.otpList.push(new Otp(otp));
             }
@@ -249,12 +274,12 @@ class OtpKeysSettingsPageWidget extends Adw.PreferencesPage {
         GObject.registerClass(this);
     }
 
-    constructor(settings) {
+    constructor(otpRoot) {
         super();
-        let otpListWidget = new OtpKeysSecretListWidget(settings);
+        let otpListWidget = new OtpKeysSecretListWidget(otpRoot);
         this.add(otpListWidget);
 
-        let settingsWidget = new OtpKeysSettingsWidget(settings);
+        let settingsWidget = new OtpKeysSettingsWidget(otpRoot);
         this.add(settingsWidget);
     }
 }
@@ -265,26 +290,19 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
     static {
         GObject.registerClass(this);
 
-        this.install_action("otpList.add", null, self => self._addNewOtp());
-        this.install_action("otpList.import", null, self => self._importNewOtp());
-        this.install_action("otpList.export", "as", (self, name, param) => self.otpList.export(param.get_strv()));
-        this.install_action("otpList.remove", "as", (self, name, param) => self.otpList.remove(param.get_strv()));
-        this.install_action("otpList.copy", "as", (self, name, param) => self.otpList.copyToClipboard(param.get_strv()));
-        this.install_action("otpList.edit", "as", (self, name, param) => self._editOtp(param.get_strv()));
+        this.install_action("otpList.export", "as", (self, name, param) => self.otpRoot.list.export(param.get_strv()));
+        this.install_action("otpList.remove", "as", (self, name, param) => self.otpRoot.list.remove(param.get_strv()));
+        this.install_action("otpList.copy", "as", (self, name, param) => self.otpRoot.list.copyToClipboard(param.get_strv()));
         this.install_action("otpList.unlock_keyring", null, self => self._unlockKeyring());
+        this.install_action("otpList.refresh", null, self => self._fillList());
     }
 
-    constructor(settings) {
+    constructor(otpRoot) {
         super({
             title: _('Secrets'),
         });
 
-        this.connect('unrealize', this._onUnrealize.bind(this));
-        this.connect('destroy', this._onDestroy.bind(this));
-
-        this._settings = settings;
-        this._otpLib = new OtpLib();
-        this.otpList = new OtpList(settings);
+        this.otpRoot = otpRoot;
 
         this._list = new Gtk.ListBox({
             selection_mode: Gtk.SelectionMode.NONE,
@@ -292,7 +310,107 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
         });
         this.add(this._list);
 
+        this.set_header_suffix(new Gtk.Button({
+                action_name: 'otpList.refresh',
+                icon_name: 'view-refresh-symbolic',
+                has_frame: false,
+                valign: Gtk.Align.CENTER,
+                tooltip_text: _("Refresh")
+        }));
+
         this._fillList();
+    }
+
+    _fillList() {
+        const store = new Gio.ListStore({item_type: Gio.ListModel});
+        const listModel = new Gtk.FlattenListModel({model: store});
+
+        if (this.otpRoot.lib.isKeyringUnlocked()) {
+            this.otpRoot.list._sync();
+            store.append(this.otpRoot.list);
+            store.append(new NewItemModel());// This line is for new otp
+            store.append(new NewItemModel());// This line is for import otp
+        }
+
+        while (this._list.get_last_child() != null) {
+            this._list.remove(this._list.get_last_child());
+        }
+
+        if (this.otpRoot.lib.isKeyringUnlocked()) {
+            let newAdded = false;
+            this._list.bind_model(listModel, item => {
+                if (item instanceof Otp) {
+                    return new OtpRowExpanded(this.otpRoot, item);
+                } else if (newAdded === false) {
+                    newAdded = true;
+                    return new OtpRowExpanded(this.otpRoot, null);
+                } else {
+                    return new ImportOtpRowExpanded(this.otpRoot);
+                }
+            });
+        } else {
+            store.append(new NewItemModel());
+            this._list.bind_model(listModel, item => {
+                return new Adw.ActionRow({
+                    activatable: true,
+                    action_name: 'otpList.unlock_keyring',
+                    title: _("Unlock Keyring")
+                });
+            });
+        }
+    }
+
+    _unlockKeyring() {
+        this.otpRoot.lib.unlockKeyring(this);
+        this._fillList();
+    }
+}
+
+class OtpKeysSettingsWidget extends Adw.PreferencesGroup{
+    static {
+        GObject.registerClass(this);
+    }
+
+    constructor(otpRoot) {
+        super({
+            title: _("Settings")
+        });
+
+        this.showNotificationSwitch = new Adw.SwitchRow({
+            title: _("Show Notifications")
+        })
+        this.add(this.showNotificationSwitch);
+
+        otpRoot.settings.bind(SETTINGS_NOTIFY, this.showNotificationSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
+
+        this.showCopyIconsSwitch = new Adw.SwitchRow({
+            title: _("Show Copy Icons")
+        })
+        this.add(this.showCopyIconsSwitch);
+
+        otpRoot.settings.bind(SETTINGS_COPY_ICONS, this.showCopyIconsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
+    }
+}
+
+class CodeButton extends Gtk.Button {
+    static {
+        GObject.registerClass(this);
+    }
+
+    constructor(otp) {
+        super({
+            action_name: 'otpList.copy',
+            action_target: new GLib.Variant('as', [otp.username, otp.issuer]),
+            valign: Gtk.Align.CENTER,
+            tooltip_text: _("Copy")
+        })
+
+        this.otp = otp;
+
+        this.connect('unrealize', this._onUnrealize.bind(this));
+        this.connect('destroy', this._onDestroy.bind(this));
+
+        this.refreshCode();
 
         let interval = 30000 - (parseInt(new Date().getTime()) % 30000);
         if (this._delay == null) {
@@ -300,13 +418,13 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
                 GLib.PRIORITY_DEFAULT,
                 interval,
                 () => {
-                    this._fillList();
+                    this.refreshCode();
                     if (this._repeater == null) {
                         this._repeater = GLib.timeout_add(
                             GLib.PRIORITY_DEFAULT,
                             30000,
                             () => {
-                                this._fillList();
+                                this.refreshCode();
                                 return true;
                             }
                         );
@@ -318,52 +436,19 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
         }
     }
 
-    _fillList() {
-        const store = new Gio.ListStore({item_type: Gio.ListModel});
-        const listModel = new Gtk.FlattenListModel({model: store});
-
-        if (this._otpLib.isKeyringUnlocked()) {
-            this.otpList._sync();
-            store.append(this.otpList);
-        }
-        
-        store.append(new NewItemModel());
-
-        while (this._list.get_last_child() != null) {
-            this._list.remove(this._list.get_last_child());
-        }
-
-        if (this._otpLib.isKeyringUnlocked()) {
-            this._list.bind_model(listModel, item => {
-                return item instanceof NewItem
-                    ? new NewOtpRow()
-                    : new OtpRow(item);
-            });
-        } else {
-            this._list.bind_model(listModel, item => {
-                return new OpenKeyringRow();
-            });
-        }
+    human_readable_code(code) {
+        let readableCode = String(code);
+        if (readableCode.length === 6)
+            readableCode = readableCode.slice(0,3) + " " + readableCode.slice(3);
+        else if (readableCode.length === 7)
+            readableCode = readableCode.slice(0,1) + " " + readableCode.slice(1, 4) + " " + readableCode.slice(4);
+        else if (readableCode.length === 8)
+            readableCode = readableCode.slice(0,2) + " " + readableCode.slice(2, 5) + " " + readableCode.slice(5);
+        return readableCode;
     }
 
-    _addNewOtp() {
-        const dialog = new NewSecretDialog(this.get_root(), this._settings);
-        dialog.show();
-    }
-
-    _importNewOtp() {
-        const dialog = new ImportOtpDilaog(this.get_root(), this._settings);
-        dialog.show();
-    }
-
-    _editOtp(otp) {
-        const dialog = new NewSecretDialog(this.get_root(), this._settings, this._otpLib.getOtp(otp[0], otp[1]));
-        dialog.show();
-    }
-
-    _unlockKeyring() {
-        this._otpLib.unlockKeyring(this);
-        this._fillList();
+    refreshCode() {
+        this.set_label(this.human_readable_code(Totp.getCode(this.otp.secret, this.otp.digits, this.otp.period, this.otp.algorithm)))
     }
 
     _onUnrealize() {
@@ -389,304 +474,156 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
     }
 }
 
-class OtpKeysSettingsWidget extends Adw.PreferencesGroup{
+class OtpRowExpanded extends Adw.ExpanderRow {
     static {
         GObject.registerClass(this);
+
+        this.install_action("otpRow.edit", null, self => self._edit());
+        this.install_action("otpRow.save", null, self => self._save());
+        this.install_action("otpRow.new", null, self => self._new());
     }
 
-    constructor(settings) {
+    constructor(otpRoot, otp) {
         super({
-            title: _("Settings")
+            activatable: otp ? false : true,
+            expanded: false,
+            enable_expansion: false,
+            action_name: otp ? null : "otpRow.new",
+            show_enable_switch: false,
+            title: otp ? otp.username : _("Add Secret"),
+            subtitle: otp ? otp.issuer : null
         });
 
-        this._settings = settings;
+        this.otpRoot = otpRoot;
+        this.otp = otp;
 
-        this.showNotificationSwitch = new Adw.SwitchRow({
-            title: _("Show Notifications")
-        })
-        this.add(this.showNotificationSwitch);
-
-        this._settings.bind(SETTINGS_NOTIFY, this.showNotificationSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
-
-        this.showCopyIconsSwitch = new Adw.SwitchRow({
-            title: _("Show Copy Icons")
-        })
-        this.add(this.showCopyIconsSwitch);
-
-        this._settings.bind(SETTINGS_COPY_ICONS, this.showCopyIconsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
-    }
-}
-
-class OtpRow extends Adw.ActionRow {
-    static {
-        GObject.registerClass(this);
+        this._setButtons();
+        this._setRows();
     }
 
-    constructor(otp) {
-        super({
-            activatable: false,
-            title: otp.username,
-        });
+    _setButtons() {
+        if (this.otp) {
+            this.editMode = true;
+            this.code = new CodeButton(this.otp);
 
-        const code = new Gtk.Button({
-            label: this.human_readable_code(Totp.getCode(otp.secret, otp.digits, otp.period, otp.algorithm)),
-            action_name: 'otpList.copy',
-            action_target: new GLib.Variant('as', [otp.username, otp.issuer]),
-            valign: Gtk.Align.CENTER,
-            tooltip_text: _("Copy")
-        })
-        this.add_suffix(code)
+            this.edit = new Gtk.Button({
+                action_name: 'otpRow.edit',
+                icon_name: 'document-edit-symbolic',
+                has_frame: false,
+                valign: Gtk.Align.CENTER,
+                tooltip_text: _("Edit")
+            });
 
-        const edit = new Gtk.Button({
-            action_name: 'otpList.edit',
-            action_target: new GLib.Variant('as', [otp.username, otp.issuer]),
-            icon_name: 'document-edit-symbolic',
-            has_frame: false,
-            valign: Gtk.Align.CENTER,
-            tooltip_text: _("Edit")
-        });
-        this.add_suffix(edit);
+            this.exportBtn = new Gtk.Button({
+                action_name: 'otpList.export',
+                action_target: new GLib.Variant('as', [this.otp.username, this.otp.issuer]),
+                icon_name: 'document-revert-symbolic-rtl',
+                has_frame: false,
+                valign: Gtk.Align.CENTER,
+                tooltip_text: _("Export")
+            });
 
-        const exportBtn = new Gtk.Button({
-            action_name: 'otpList.export',
-            action_target: new GLib.Variant('as', [otp.username, otp.issuer]),
-            icon_name: 'document-revert-symbolic-rtl',
-            has_frame: false,
-            valign: Gtk.Align.CENTER,
-            tooltip_text: _("Export")
-        });
-        this.add_suffix(exportBtn);
+            this.remove = new Gtk.Button({
+                action_name: 'otpList.remove',
+                action_target: new GLib.Variant('as', [this.otp.username, this.otp.issuer]),
+                icon_name: 'edit-delete-symbolic',
+                has_frame: false,
+                valign: Gtk.Align.CENTER,
+                tooltip_text: _("Remove")
+            });
 
-        const remove = new Gtk.Button({
-            action_name: 'otpList.remove',
-            action_target: new GLib.Variant('as', [otp.username, otp.issuer]),
-            icon_name: 'edit-delete-symbolic',
-            has_frame: false,
-            valign: Gtk.Align.CENTER,
-            tooltip_text: _("Remove")
-        });
-        this.add_suffix(remove);
-    }
-
-    human_readable_code(code) {
-        let readableCode = String(code);
-        if (readableCode.length === 6)
-            readableCode = readableCode.slice(0,3) + " " + readableCode.slice(3);
-        else if (readableCode.length === 7)
-            readableCode = readableCode.slice(0,1) + " " + readableCode.slice(1, 4) + " " + readableCode.slice(4);
-        else if (readableCode.length === 8)
-            readableCode = readableCode.slice(0,2) + " " + readableCode.slice(2, 5) + " " + readableCode.slice(5);
-        return readableCode;
-    }
-}
-
-
-class NewOtpRow extends Adw.ActionRow {
-    static {
-        GObject.registerClass(this);
-    }
-
-    constructor() {
-        super({
-            activatable: false,
-        });
-
-        const newOtp = new Gtk.Button({
-            action_name: 'otpList.add',
-            child: new Adw.ButtonContent({
-                label: _("Add Secret"),
+            this.add_suffix(this.edit);
+            this.add_suffix(this.remove);
+            this.add_suffix(this.exportBtn);
+            this.add_suffix(this.code);
+        } else {
+            this.editMode = false;
+            this.symbol = new Gtk.Image({
                 icon_name: 'list-add-symbolic',
-            }),
-            has_frame: false,
-            valign: Gtk.Align.CENTER,
-        });
-        this.add_prefix(newOtp);
+            });
+            this.add_prefix(this.symbol)
 
-        const importOtp = new Gtk.Button({
-            action_name: 'otpList.import',
-            child: new Adw.ButtonContent({
-                label: _("Import Secret"),
-                icon_name: 'document-revert-symbolic',
-            }),
-            has_frame: false,
-            valign: Gtk.Align.CENTER,
-        });
-        this.add_suffix(importOtp);
-    }
-}
-
-class OpenKeyringRow extends Adw.ActionRow {
-    static {
-        GObject.registerClass(this);
+            this.saveButton = new Gtk.Button({
+                child: new Adw.ButtonContent({
+                    label: _("Save"),
+                    icon_name: 'document-save-symbolic',
+                }),
+                has_frame: false,
+                valign: Gtk.Align.CENTER,
+            });
+            this.saveButton.set_action_name("");
+            this.add_suffix(this.saveButton);
+        }
     }
 
-    constructor() {
-        super({
-            activatable: true,
-            action_name: 'otpList.unlock_keyring',
-            title: _("Unlock Keyring")
-        });
-    }
-}
-
-class NewSecretDialog extends Gtk.Dialog {
-    static {
-        GObject.registerClass(this);
-
-        this.install_action("otp.save", null, self => self._saveNewSecret());
-    }
-
-    constructor(parent, settings, otp = null) {
-        super({
-            title: otp === null ? _("New Secret") : _("Edit Secret"),
-            transient_for: parent,
-            modal: true,
-            use_header_bar: true,
+    _setRows() {
+        this.usernameEntry = new Adw.EntryRow({
+            title: _("Username"),
+            text: this.otp ? this.otp.username : ""
         });
 
-        this._settings = settings;
-        this._otpLib = new OtpLib();
-        this.editMode = false;
-
-        this.main = new Gtk.Grid({
-            margin_top: 10,
-            margin_bottom: 10,
-            margin_start: 10,
-            margin_end: 10,
-            row_spacing: 12,
-            column_spacing: 18,
-            column_homogeneous: false,
-            row_homogeneous: false
+        this.issuerEntry = new Adw.EntryRow({
+            title: _("Issuer"),
+            text: this.otp ? this.otp.issuer : ""
         });
 
-        let usernameLabel = new Gtk.Label({label: _("Username"), halign: Gtk.Align.START});
-        let issuerLabel = new Gtk.Label({label: _("Issuer"), halign: Gtk.Align.START});
-        let secretLabel = new Gtk.Label({label: _("Secret Code"), halign: Gtk.Align.START});
-        let periodLabel = new Gtk.Label({label: _("Epoc Time"), halign: Gtk.Align.START});
-        let digitsLabel = new Gtk.Label({label: _("Digits"), halign: Gtk.Align.START});
-        let hashlibLabel = new Gtk.Label({label: _("Algoritm"), halign: Gtk.Align.START});
-
-        this.usernameEntry = new Gtk.Entry({
-            halign: Gtk.Align.END,
-            editable: true,
-            visible: true,
-            width_chars: 50
+        this.secretEntry = new Adw.EntryRow({
+            title: _("Secret"),
+            text: this.otp ? this.otp.secret : ""
         });
 
-        this.issuerEntry = new Gtk.Entry({
-            halign: Gtk.Align.END,
-            editable: true,
-            visible: true,
-            width_chars: 50
+        this.periodCombo = new Adw.ComboRow({
+            title: _("Period"),
+            model: new Gtk.StringList({
+                strings: [_("30 seconds"), _("60 seconds")]
+            })
         });
 
-        this.secretEntry = new Gtk.Entry({
-            halign: Gtk.Align.END,
-            editable: true,
-            visible: true,
-            width_chars: 50
-        });
-
-        this.period30SecToggle = new Gtk.ToggleButton({
-            label: _("30 seconds"),
-            active: true,
-        });
-
-        this.period60SecToggle = new Gtk.ToggleButton({
-            label: _("60 seconds"),
-            group: this.period30SecToggle,
-        });
-
-        this.digitsSpinner = new Gtk.SpinButton({
-            halign: Gtk.Align.END,
+        this.digitsSpin = new Adw.SpinRow({
+            title: _("Digits"),
             adjustment: new Gtk.Adjustment({
                 lower: 6,
                 upper: 8,
                 step_increment: 1
             }),
-            value: 6
+            value: this.otp ? this.otp.digits : 6,
         });
 
-        this.algorithmToggleSha1 = new Gtk.ToggleButton({
-            label: "SHA-1",
-            active: true,
+        let algorithms = ["SHA1", "SHA256", "SHA512"]
+        this.algorithmCombo = new Adw.ComboRow({
+            title: _("Algorithm"),
+            model: new Gtk.StringList ({
+                strings: algorithms
+            })
         });
 
-        this.algorithmToggleSha256 = new Gtk.ToggleButton({
-            label: "SHA-256",
-            group: this.algorithmToggleSha1,
-        });
-
-        this.algorithmToggleSha512 = new Gtk.ToggleButton({
-            label: "SHA-512",
-            group: this.algorithmToggleSha1,
-        });
-
-        const addRow = ((main) => {
-            let row = 0;
-            return (label, input) => {
-                let inputWidget = input;
-
-                if (Array.isArray(input)) {
-                    inputWidget = new Gtk.Box({
-                        orientation: Gtk.Orientation.HORIZONTAL,
-                        halign: Gtk.Align.END
-                    });
-                    input.forEach(widget => {
-                        inputWidget.append(widget);
-                    });
-                }
-
-                if (label) {
-                    main.attach(label, 0, row, 1, 1);
-                    main.attach(inputWidget, 1, row, 1, 1);
-                }
-                else {
-                    main.attach(inputWidget, 0, row, 2, 1);
-                }
-
-                row++;
-            };
-        })(this.main);
-
-        if (otp != null) {
-            this.editMode = true;
-            this.originalOtp = otp;
-            this.usernameEntry.set_text(otp.username);
-            this.issuerEntry.set_text(otp.issuer);
-            this.secretEntry.set_text(otp.secret);
-            if (otp.period === "30")
-                this.period30SecToggle.set_active(true);
-            else
-                this.period60SecToggle.set_active(true);
-            this.digitsSpinner.set_value(otp.digits);
-            if (otp.algorithm === "sha1")
-                this.algorithmToggleSha1.set_active(true);
-            else if (otp.algorithm === "sha256")
-                this.algorithmToggleSha256.set_active(true);
-            else if (otp.algorithm === "sha512")
-                this.algorithmToggleSha512.set_active(true);
+        if (this.otp) {
+            this.periodCombo.set_selected(this.otp.period == 30 ? 0 : 1);
+            this.algorithmCombo.set_selected(algorithms.indexOf(this.otp.algorithm.toUpperCase()));
         }
 
-        addRow(usernameLabel, this.usernameEntry);
-        addRow(issuerLabel, this.issuerEntry);
-        addRow(secretLabel, this.secretEntry);
-        addRow(periodLabel, [this.period30SecToggle, this.period60SecToggle]);
-        addRow(digitsLabel, this.digitsSpinner);
-        addRow(hashlibLabel, [this.algorithmToggleSha1, this.algorithmToggleSha256, this.algorithmToggleSha512]);
-
-        this.set_child(this.main);
-
-        this.saveButton = new Gtk.Button({
-            label: _("Save"),
-            action_name: "otp.save",
-        });
-
-        this.add_action_widget(this.saveButton, 1);
+        this.add_row(this.usernameEntry);
+        this.add_row(this.issuerEntry);
+        this.add_row(this.secretEntry);
+        this.add_row(this.periodCombo);
+        this.add_row(this.digitsSpin);
+        this.add_row(this.algorithmCombo);
     }
 
-    _saveNewSecret() {
-        let otpList = new OtpList(this._settings);
+    _edit() {
+        this.set_enable_expansion(true);
+        this.set_expanded(true);
+        this.edit.set_tooltip_text(_("Save"));
+        this.edit.set_icon_name("document-save-symbolic");
+        this.edit.set_action_name("otpRow.save");
+    }
+
+    _new() {
+        this.set_enable_expansion(true);
+        this.saveButton.set_action_name("otpRow.save");
+    }
+
+    _save() {
         try {
             if (this.secretEntry.get_text() === "" | this.usernameEntry.get_text() === "")
                 throw Error(_("Fields must be filled"));
@@ -695,133 +632,123 @@ class NewSecretDialog extends Gtk.Dialog {
                 "secret": this.secretEntry.get_text(),
                 "issuer": this.issuerEntry.get_text() === "" ? "otp-key" : this.issuerEntry.get_text(),
                 "username": this.usernameEntry.get_text(),
-                "period": this.period30SecToggle.get_active() ? 30 : 60,
-                "digits": this.digitsSpinner.get_value(),
-                "algorithm": this.algorithmToggleSha1.get_active() ? "sha1" : (this.algorithmToggleSha256.get_active() ? "sha256": "sha512"),
+                "period": [30, 60][this.periodCombo.get_selected()],
+                "digits": this.digitsSpin.get_value(),
+                "algorithm": ["sha1", "sha256", "sha512"][this.algorithmCombo.get_selected()],
             });
+            if (this.otp) {
+                this.otpRoot.list.remove([this.otp.username, this.otp.issuer]);
+            }
+            if (this.otpRoot.lib.getOtp(otp.username, otp.issuer) != null) //test availability
+                throw _("Otp already available");
+            this.otpRoot.lib.saveOtp(otp);
+            this.otpRoot.list.append(otp);
+
+            this.set_enable_expansion(false);
+            this.set_expanded(false);
             if (this.editMode) {
-                otpList.remove([this.originalOtp.username, this.originalOtp.issuer]);
-            }
-            if (this._otpLib.getOtp(otp.username, otp.issuer) != null) //test availability
-                throw "Otp already available";
-            this._otpLib.saveOtp(otp);
-            otpList.append(otp);
-            this.close();
-        } catch (e) {
-            this.secretEntry.set_text("");
-            this.secretEntry.set_placeholder_text(_("Please insert valid secret key"));
-            this.usernameEntry.set_placeholder_text(_("Please insert a username"));
-            if (e === "Otp already available") {
+                this.edit.set_tooltip_text(_("Edit"));
+                this.edit.set_icon_name("document-edit-symbolic");
+                this.edit.set_action_name("otpRow.edit");
+            } else {
+                this.saveButton.set_action_name("");
+                //reset entries
                 this.usernameEntry.set_text("");
-                this.usernameEntry.set_placeholder_text(_("Otp already available"));
+                this.issuerEntry.set_text("");
+                this.secretEntry.set_text("");
+                this.periodCombo.set_selected(0);
+                this.digitsSpin.set_value(6);
+                this.algorithmCombo.set_selected(0);
             }
+        } catch (e) {
+            this.otpRoot.showToast(e.message);
         }
     }
 }
 
-class ImportOtpDilaog extends Gtk.Dialog{
+class ImportOtpRowExpanded extends Adw.ExpanderRow {
     static {
         GObject.registerClass(this);
 
-        this.install_action("otp.save", null, self => self._saveNewSecret());
+        this.install_action("otpRow.import", null, self => self._import());
+        this.install_action("otpRow.save", null, self => self._save());
     }
 
-    constructor(parent, settings) {
+    constructor(otpRoot) {
         super({
-            title: _("Import Secret"),
-            transient_for: parent,
-            modal: true,
-            use_header_bar: true,
+            activatable: true,
+            action_name: "otpRow.import",
+            expanded: false,
+            enable_expansion: false,
+            show_enable_switch: false,
+            title: _("Import Secret")
         });
 
-        this._settings = settings;
-        this._otpLib = new OtpLib();
-        
-        this.main = new Gtk.Grid({
-            margin_top: 10,
-            margin_bottom: 10,
-            margin_start: 10,
-            margin_end: 10,
-            row_spacing: 12,
-            column_spacing: 18,
-            column_homogeneous: false,
-            row_homogeneous: false
+        this.otpRoot = otpRoot;
+
+        this.setButtons()
+        this.setRows()
+    }
+
+    setButtons() {
+        this.symbol = new Gtk.Image({
+            icon_name: 'document-revert-symbolic',
         });
-
-        let otpLabel = new Gtk.Label({label: "Secret URL", halign: Gtk.Align.START});
-        
-        this.otpEntry = new Gtk.Entry({
-            halign: Gtk.Align.END,
-            editable: true,
-            visible: true,
-            width_chars: 50,
-            placeholder_text: "otpauth://..."
-        });
-
-        const addRow = ((main) => {
-            let row = 0;
-            return (label, input) => {
-                let inputWidget = input;
-
-                if (Array.isArray(input)) {
-                    inputWidget = new Gtk.Box({
-                        orientation: Gtk.Orientation.HORIZONTAL,
-                        halign: Gtk.Align.END
-                    });
-                    input.forEach(widget => {
-                        inputWidget.append(widget);
-                    });
-                }
-
-                if (label) {
-                    main.attach(label, 0, row, 1, 1);
-                    main.attach(inputWidget, 1, row, 1, 1);
-                }
-                else {
-                    main.attach(inputWidget, 0, row, 2, 1);
-                }
-
-                row++;
-            };
-        })(this.main);
-
-        addRow(otpLabel, this.otpEntry);
-        
-        this.set_child(this.main);
+        this.add_prefix(this.symbol)
 
         this.saveButton = new Gtk.Button({
-            label: _("Save"),
-            action_name: "otp.save",
+            child: new Adw.ButtonContent({
+                label: _("Save"),
+                icon_name: 'document-save-symbolic',
+            }),
+            has_frame: false,
+            valign: Gtk.Align.CENTER,
         });
-
-        this.add_action_widget(this.saveButton, 1);
+        this.saveButton.set_action_name("");
+        this.add_suffix(this.saveButton);
     }
 
-    _saveNewSecret() {
-        let otpList = new OtpList(this._settings);
+    setRows() {
+        this.otpUriEntry = new Adw.EntryRow({
+            title: _("Secret Link"),
+            text: "",
+            input_purpose: Gtk.InputPurpose.URL
+        });
+
+        this.add_row(this.otpUriEntry);
+    }
+
+    _import() {
+        this.set_enable_expansion(true);
+        this.saveButton.set_action_name("otpRow.save");
+    }
+
+    _save() {
         try {
-            if (this.otpEntry.get_text() === "")
+            if (this.otpUriEntry.get_text() === "")
                 throw Error(_("Fields must be filled"));
-            let otp = this._otpLib.parseURL(this.otpEntry.get_text());
+            let otp = this.otpRoot.lib.parseURL(this.otpUriEntry.get_text());
             Totp.base32hex(otp.secret);//Check secret code
             
-            if (this._otpLib.getOtp(otp.username, otp.issuer) != null) //test availability
+            if (this.otpRoot.lib.getOtp(otp.username, otp.issuer) != null) //test availability
                 throw Error(_("Otp already available"));
-            this._otpLib.saveOtp(otp);
-            otpList.append(otp);
-            this.close();
+            this.otpRoot.lib.saveOtp(otp);
+            this.otpRoot.list.append(otp);
+
+            this.set_enable_expansion(false);
+            this.set_expanded(false);
+            this.saveButton.set_action_name(null);
+            this.otpUriEntry.set_text("");
         } catch (e) {
-            this.otpEntry.set_text("");
-            this.otpEntry.set_placeholder_text(_("Please insert valid otp link"));
-            if (e != null) {
-                this.otpEntry.set_placeholder_text(e.message);
-            }
+            this.otpRoot.showToast(e.message);
         }
     }
 }
 
 export default class OtpKeysPrefs extends ExtensionPreferences {
-    getPreferencesWidget() {
-        return new OtpKeysSettingsPageWidget(this.getSettings());
+    fillPreferencesWindow(window) {
+        let otpRoot = new OtpRoot(this);
+        otpRoot.setWindow(window);
+        window.add(new OtpKeysSettingsPageWidget(otpRoot));
     }
 }

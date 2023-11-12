@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-08 13:58+0300\n"
+"POT-Creation-Date: 2023-11-12 16:35+0300\n"
 "PO-Revision-Date: 2023-10-28T12:36:51+02:00\n"
 "Last-Translator: Óscar García Amor <ogarcia@connectical.com>\n"
 "Language-Team: \n"
@@ -17,122 +17,142 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: extension.js:82
+#: extension.js:82 prefs.js:196
 msgid "Code copied to clipboard."
 msgstr "Código copiado en el portapapeles."
 
-#: extension.js:150 prefs.js:525
+#: extension.js:151 prefs.js:357
 msgid "Unlock Keyring"
 msgstr ""
 
-#: extension.js:163
+#: extension.js:164
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: prefs.js:278
+#: prefs.js:185
+#, fuzzy
+msgid "Otp link exported to clipboard."
+msgstr "Código copiado en el portapapeles."
+
+#: prefs.js:302
 msgid "Secrets"
 msgstr "Secretos"
 
-#: prefs.js:397
+#: prefs.js:318
+msgid "Refresh"
+msgstr ""
+
+#: prefs.js:376
 msgid "Settings"
 msgstr "Ajustes"
 
-#: prefs.js:403
+#: prefs.js:380
 msgid "Show Notifications"
 msgstr "Mostrar notificaciones"
 
-#: prefs.js:410
+#: prefs.js:387
 msgid "Show Copy Icons"
 msgstr "Mostrar los iconos de copiar"
 
-#: prefs.js:434
+#: prefs.js:405
 msgid "Copy"
 msgstr ""
 
-#: prefs.js:444
-msgid "Edit"
-msgstr ""
-
-#: prefs.js:454
-msgid "Export"
-msgstr ""
-
-#: prefs.js:464
-msgid "Remove"
-msgstr ""
-
-#: prefs.js:495
+#: prefs.js:493
 msgid "Add Secret"
 msgstr "Añadir secreto"
 
-#: prefs.js:506 prefs.js:728
+#: prefs.js:514 prefs.js:650
+msgid "Edit"
+msgstr ""
+
+#: prefs.js:523
+msgid "Export"
+msgstr ""
+
+#: prefs.js:532
+msgid "Remove"
+msgstr ""
+
+#: prefs.js:548 prefs.js:616 prefs.js:701
+msgid "Save"
+msgstr "Guardar"
+
+#: prefs.js:561
+msgid "Username"
+msgstr "Nombre de usuario"
+
+#: prefs.js:566
+msgid "Issuer"
+msgstr ""
+
+#: prefs.js:571
+#, fuzzy
+msgid "Secret"
+msgstr "Secretos"
+
+#: prefs.js:576
+msgid "Period"
+msgstr ""
+
+#: prefs.js:578
+#, fuzzy
+msgid "30 seconds"
+msgstr "30 segundos"
+
+#: prefs.js:578
+#, fuzzy
+msgid "60 seconds"
+msgstr "60 segundos"
+
+#: prefs.js:583
+msgid "Digits"
+msgstr "Dígitos"
+
+#: prefs.js:594
+#, fuzzy
+msgid "Algorithm"
+msgstr "Algoritmo"
+
+#: prefs.js:629 prefs.js:729
+msgid "Fields must be filled"
+msgstr "Los campos deben rellenarse"
+
+#. test availability
+#. Check secret code
+#. test availability
+#: prefs.js:643 prefs.js:734
+msgid "Otp already available"
+msgstr ""
+
+#: prefs.js:684
 #, fuzzy
 msgid "Import Secret"
 msgstr "Editar Secreto"
 
-#: prefs.js:539
-msgid "New Secret"
-msgstr "Nuevo secreto"
-
-#: prefs.js:539
-msgid "Edit Secret"
-msgstr "Editar Secreto"
-
-#: prefs.js:559
-msgid "Username"
-msgstr "Nombre de usuario"
-
-#: prefs.js:560
-msgid "Issuer"
-msgstr ""
-
-#: prefs.js:561
-msgid "Secret Code"
-msgstr "Código secreto"
-
-#: prefs.js:562
-msgid "Epoc Time"
-msgstr "Intervalo de tiempo"
-
-#: prefs.js:563
-msgid "Digits"
-msgstr "Dígitos"
-
-#: prefs.js:564
-msgid "Algoritm"
-msgstr "Algoritmo"
-
-#: prefs.js:588
-msgid "30 seconds"
-msgstr "30 segundos"
-
-#: prefs.js:593
-msgid "60 seconds"
-msgstr "60 segundos"
-
-#: prefs.js:678 prefs.js:789
-msgid "Save"
-msgstr "Guardar"
-
-#: prefs.js:689 prefs.js:800
-msgid "Fields must be filled"
-msgstr "Los campos deben rellenarse"
-
-#: prefs.js:709
-msgid "Please insert valid secret key"
-msgstr "Por favor, introduce una clave secreta válida"
-
-#: prefs.js:710
-msgid "Please insert a username"
-msgstr "Por favor, introduce un nombre de usuario"
-
-#. Check secret code
-#. test availability
-#: prefs.js:713 prefs.js:805
-msgid "Otp already available"
-msgstr ""
-
-#: prefs.js:811
+#: prefs.js:713
 #, fuzzy
-msgid "Please insert valid otp link"
-msgstr "Por favor, introduce una clave secreta válida"
+msgid "Secret Link"
+msgstr "Secretos"
+
+#~ msgid "Epoc Time"
+#~ msgstr "Intervalo de tiempo"
+
+#~ msgid "New Secret"
+#~ msgstr "Nuevo secreto"
+
+#~ msgid "Edit Secret"
+#~ msgstr "Editar Secreto"
+
+#~ msgid "Secret Code"
+#~ msgstr "Código secreto"
+
+#~ msgid "Please insert valid secret key"
+#~ msgstr "Por favor, introduce una clave secreta válida"
+
+#~ msgid "Please insert a username"
+#~ msgstr "Por favor, introduce un nombre de usuario"
+
+#, fuzzy
+#~ msgid "Please insert valid otp link"
+#~ msgstr "Por favor, introduce una clave secreta válida"
