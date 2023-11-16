@@ -32,8 +32,8 @@ export default class OtpLib {
 
     isKeyringUnlocked() {
         const service = Secret.Service.get_sync(Secret.ServiceFlags.LOAD_COLLECTIONS, null);
-        let cols = service.get_collections()
-        return !cols[0].locked;//Default keyring
+        let defaultCol = Secret.Collection.for_alias_sync(service, Secret.COLLECTION_DEFAULT, null, null);
+        return !defaultCol.locked;
     }
 
     unlockKeyring(parent) {
