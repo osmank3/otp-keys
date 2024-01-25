@@ -30,21 +30,15 @@ var OtpLib = class {
     }
 
     isKeyringUnlocked() {
-        const service = Secret.Service.get_sync(Secret.ServiceFlags.LOAD_COLLECTIONS, null);
+        const service = Secret.Service.get_sync(Secret.LOAD_COLLECTIONS, null);
         let defaultCol = Secret.Collection.for_alias_sync(service, Secret.COLLECTION_DEFAULT, null, null);
         return !defaultCol.locked;
     }
 
     unlockKeyring(parent) {
-        //Add test key to keyring for unlocking keyring
-        let attr = {"username": "username", "issuer": "issuer"};
-        Secret.password_store(this._otpSchema, attr,
-            Secret.COLLECTION_DEFAULT, "otp-key-test", "test value", null, (source, result, data) => {
-            if (this.isKeyringUnlocked()) {
-                parent._fillList();
-                Secret.password_clear_sync(this._otpSchema, attr, null);//Remove test key from keyring
-            }
-        });
+        let service = Secret.Service.get_sync(Secret.LOAD_COLLECTIONS, null);
+        let collection = Secret.Collection.for_alias_sync(service, Secret.COLLECTION_DEFAULT, null, null);
+        service.unlock_sync([collection], null);
     }
 
     parseURL(urlString) {
