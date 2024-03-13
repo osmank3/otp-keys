@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-12 16:35+0300\n"
+"POT-Creation-Date: 2024-03-13 10:16+0300\n"
 "PO-Revision-Date: 2023-01-23 19:04+01000\n"
 "Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -20,7 +20,11 @@ msgstr ""
 msgid "Code copied to clipboard."
 msgstr "Codice copiato negli appunti."
 
-#: extension.js:151 prefs.js:357
+#: extension.js:82
+msgid "Copied code is: "
+msgstr ""
+
+#: extension.js:151 prefs.js:360
 msgid "Unlock Keyring"
 msgstr ""
 
@@ -33,103 +37,107 @@ msgstr "Preferenze"
 msgid "Otp link exported to clipboard."
 msgstr "Codice copiato negli appunti."
 
-#: prefs.js:302
+#: prefs.js:305
 msgid "Secrets"
 msgstr "Segreti"
 
-#: prefs.js:318
+#: prefs.js:321
 msgid "Refresh"
 msgstr ""
 
-#: prefs.js:376
+#: prefs.js:379
 msgid "Settings"
 msgstr ""
 
-#: prefs.js:380
+#: prefs.js:383
 msgid "Show Notifications"
 msgstr ""
 
-#: prefs.js:387
+#: prefs.js:390
 msgid "Show Copy Icons"
 msgstr ""
 
-#: prefs.js:405
+#: prefs.js:408
 msgid "Copy"
 msgstr ""
 
-#: prefs.js:493
+#: prefs.js:496
 msgid "Add Secret"
 msgstr "Aggingi segreto"
 
-#: prefs.js:514 prefs.js:650
+#: prefs.js:517 prefs.js:655
 msgid "Edit"
 msgstr ""
 
-#: prefs.js:523
+#: prefs.js:526
 msgid "Export"
 msgstr ""
 
-#: prefs.js:532
+#: prefs.js:535
 msgid "Remove"
 msgstr ""
 
-#: prefs.js:548 prefs.js:616 prefs.js:701
+#: prefs.js:551 prefs.js:619 prefs.js:706
 msgid "Save"
 msgstr "Salva"
 
-#: prefs.js:561
+#: prefs.js:564
 msgid "Username"
 msgstr "Nome utente"
 
-#: prefs.js:566
+#: prefs.js:569
 msgid "Issuer"
 msgstr ""
 
-#: prefs.js:571
+#: prefs.js:574
 #, fuzzy
 msgid "Secret"
 msgstr "Segreti"
 
-#: prefs.js:576
+#: prefs.js:579
 msgid "Period"
 msgstr ""
 
-#: prefs.js:578
+#: prefs.js:581
 #, fuzzy
 msgid "30 seconds"
 msgstr "30 secondi"
 
-#: prefs.js:578
+#: prefs.js:581
 #, fuzzy
 msgid "60 seconds"
 msgstr "60 secondi"
 
-#: prefs.js:583
+#: prefs.js:586
 msgid "Digits"
 msgstr "Cifre"
 
-#: prefs.js:594
+#: prefs.js:597
 #, fuzzy
 msgid "Algorithm"
 msgstr "Algoritmo"
 
-#: prefs.js:629 prefs.js:729
+#: prefs.js:632 prefs.js:734
 msgid "Fields must be filled"
 msgstr "I campi devono essere compilati"
+
+#: prefs.js:634
+msgid "Unaccepted character for issuer: '&amp;'"
+msgstr ""
 
 #. test availability
 #. Check secret code
 #. test availability
-#: prefs.js:643 prefs.js:734
+#: prefs.js:648 prefs.js:739
 msgid "Otp already available"
 msgstr ""
 
-#: prefs.js:684
+#: prefs.js:689
 #, fuzzy
 msgid "Import Secret"
 msgstr "Nuovo segreto"
 
-#: prefs.js:713
+#: prefs.js:718
 #, fuzzy
 msgid "Secret Link"
 msgstr "Segreti"

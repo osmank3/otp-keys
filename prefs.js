@@ -246,7 +246,7 @@ class OtpList extends GObject.Object {
                 let issuer = "otp-key";
                 [username, issuer] = stringSecret.split(":");
                 otp = this.otpRoot.lib.getOtp(username, issuer);
-                if (typeof otp == "object")
+                if (otp !== null)
                     this.otpList.push(new Otp(otp));
             }
         }
@@ -627,6 +627,8 @@ class OtpRowExpanded extends Adw.ExpanderRow {
         try {
             if (this.secretEntry.get_text() === "" | this.usernameEntry.get_text() === "")
                 throw Error(_("Fields must be filled"));
+            if (this.issuerEntry.get_text().indexOf("&") > -1)
+                throw Error(_("Unaccepted character for issuer: '&amp;'"));
             Totp.base32hex(this.secretEntry.get_text());//Check secret code
             let otp = new Otp({
                 "secret": this.secretEntry.get_text(),

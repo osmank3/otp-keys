@@ -59,14 +59,14 @@ class OtpMenuItem extends PopupMenu.PopupBaseMenuItem {
             text: this.human_readable_code(Totp.getCode(otp.secret, otp.digits, otp.period, otp.algorithm)),
             y_align: Clutter.ActorAlign.CENTER,
         });
-        this.add(code);
+        this.add_child(code);
 
         if (this._settings.get_boolean(SETTINGS_COPY_ICONS)) {
             let copyIcon = new St.Icon({
                 icon_name: "edit-copy-symbolic",
                 style_class: "popup-menu-icon",
             });
-            this.add(copyIcon);
+            this.add_child(copyIcon);
         }
 
         this.connect('activate', this._copyToClipboard.bind(this));
@@ -79,7 +79,7 @@ class OtpMenuItem extends PopupMenu.PopupBaseMenuItem {
         clipboard.set_text(St.ClipboardType.CLIPBOARD, code);
 
         if (this._settings.get_boolean(SETTINGS_NOTIFY))
-            Main.notify(_("Code copied to clipboard."));
+            Main.notify(_("Code copied to clipboard."), _("Copied code is: ") + code);
     }
 
     human_readable_code(code) {
@@ -140,7 +140,7 @@ class Indicator extends PanelMenu.Button {
             let issuer = "otp-key";
             [username, issuer] = stringSecret.split(":");
             otp = this._otpLib.getOtp(username, issuer);
-            if (typeof otp == "object")
+            if (otp !== null)
                 this._otpList.push(otp);
         }
     }
