@@ -142,7 +142,7 @@ class Indicator extends PanelMenu.Button {
             let issuer = "otp-key";
             [username, issuer] = stringSecret.split(":");
             otp = this._otpLib.getOtp(username, issuer);
-            if (typeof otp == "object")
+            if (otp !== null)
                 this._otpList.push(otp);
         }
     }

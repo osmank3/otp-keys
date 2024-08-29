@@ -219,7 +219,7 @@ class OtpList extends GObject.Object {
                 let issuer = "otp-key";
                 [username, issuer] = stringSecret.split(":");
                 otp = this._otpLib.getOtp(username, issuer);
-                if (typeof otp == "object")
+                if (otp !== null)
                     this.otpList.push(new Otp(otp));
             }
         }
