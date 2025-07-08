@@ -1,6 +1,29 @@
 import GLib from 'gi://GLib';
 import Secret from 'gi://Secret';
 
+import './vendor/protobuf-bundle.js';
+import {decimals2base32} from "./totp.js";
+
+const ALGORITHM = {
+  0: "unspecified",
+  1: "sha1",
+  2: "sha256",
+  3: "sha512",
+  4: "md5",
+};
+
+const DIGIT_COUNT = {
+  0: "unspecified",
+  1: 6,
+  2: 8,
+};
+
+const OTP_TYPE = {
+  0: "unspecified",
+  1: "hotp",
+  2: "totp",
+};
+
 export default class OtpLib {
     constructor() {
         this._otpSchema = new Secret.Schema(
@@ -55,35 +78,72 @@ export default class OtpLib {
             "issuer": "otp-keys",
             "period": 30,
             "algorithm": "sha1",
-            "digits": 6
+            "digits": 6,
+            "type": "totp"
         };
         let uri = GLib.Uri.parse(decodeURIComponent(urlString), GLib.UriFlags.NONE);
-        if (uri.get_scheme() === "otpauth" & uri.get_host() === "totp") {
+        if (uri.get_scheme() === "otpauth") {
             let params = GLib.Uri.parse_params(uri.get_query(), -1, "&", GLib.UriParamsFlags.NONE);
-            otp.secret = Object.keys(params).includes("secret") === true ? params.secret : "";
+            otp.secret = Object.keys(params).includes("secret") ? params.secret : "";
             otp.username = uri.get_path().replace("/", "");
-            otp.issuer = Object.keys(params).includes("issuer") === true ? params.issuer : "otp-keys";
-            otp.period = Object.keys(params).includes("period") === true ? params.period : 30;
-            otp.digits = Object.keys(params).includes("digits") === true ? params.digits : 6;
-            otp.algorithm = Object.keys(params).includes("algorithm") === true ? params.algorithm.toLowerCase() : "sha1";
-            if (otp.secretcode != "") {
-                return otp;
+            otp.issuer = Object.keys(params).includes("issuer") ? params.issuer : "otp-keys";
+            otp.digits = Object.keys(params).includes("digits") ? params.digits : 6;
+            otp.algorithm = Object.keys(params).includes("algorithm") ? params.algorithm.toLowerCase() : "sha1";
+            otp.type = uri.get_host() !== "" ? uri.get_host() : "totp";
+            if (otp.type === "hotp") {
+                otp.counter = Object.keys(params).includes("counter") ? params.counter : 0;
+            } else {
+                otp.period = Object.keys(params).includes("period") ? params.period : 30;
             }
-            else {
-                return GLib.UriError.FAILED;
+
+        } else if (uri.get_scheme() === "otpauth-migration") {
+            let params = GLib.Uri.parse_params(uri.get_query(), -1, "&", GLib.UriParamsFlags.NONE);
+            let data = Object.keys(params).includes("data") ? params.data : null;
+            if (data !== null) {
+                let migrationPayload = MigrationPayloadRoot.MigrationPayload;
+                let decodedOtpPayload = migrationPayload.decode(
+                    GLib.base64_decode(data)
+                );
+
+                if (decodedOtpPayload.otpParameters && decodedOtpPayload.otpParameters.length > 0) {
+                    let otpParams = decodedOtpPayload.otpParameters[0];
+                    otp.secret = Object.keys(otpParams).includes("secret") ? decimals2base32(otpParams.secret) : "";
+                    otp.username = Object.keys(otpParams).includes("name") ? otpParams.name : "";
+                    otp.issuer = Object.keys(otpParams).includes("issuer") ? otpParams.issuer : "";
+                    otp.digits = Object.keys(otpParams).includes("digits") ? DIGIT_COUNT[otpParams.digits] : 6;
+                    otp.algorithm = Object.keys(otpParams).includes("algorithm") ? ALGORITHM[otpParams.algorithm] : "sha1";
+                    otp.type = Object.keys(otpParams).includes("type") ? OTP_TYPE[otpParams.type] : "totp";
+                    if (otp.type === "totp") {
+                        otp.period = 30;
+                    } else {
+                        otp.counter = otpParams.counter;
+                    }
+                }
             }
         }
         else {
             return GLib.UriError.BAD_SCHEME;
         }
+
+        if (otp.secret !== "") {
+            return otp;
+        }
+        else {
+            return GLib.UriError.FAILED;
+        }
     }
 
     makeURL(otp) {
-        return "otpauth://totp/" + otp["username"] + "?" +
+        let uri = "otpauth://" +  otp.type  + "/" + otp.username + "?" +
             "secret=" + otp.secret +
             "&issuer=" + otp.issuer +
-            "&period=" + otp.period +
             "&algorithm=" + otp.algorithm.toUpperCase() +
             "&digits=" + otp.digits;
+        if (otp.type === "hotp") {
+            uri = uri + "&counter=" + otp.counter;
+        } else {
+            uri = uri + "&period=" + otp.period;
+        }
+        return uri;
     }
 }

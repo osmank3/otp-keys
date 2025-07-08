@@ -7,7 +7,7 @@ Show and copy otp keys
 * Supports SHA1, SHA256, SHA512 algoritms
 * 30 and 60 seconds epoc time
 * 6 - 8 digits options
-* Import and export with otpauth://... links
+* Import and export with otpauth://... and import with otpauth-migration://... links
 
 ## Installation
 Normal users are recommended to get the extension from [extensions.gnome.org](https://extensions.gnome.org/extension/5697/otp-keys/).
@@ -28,9 +28,8 @@ git clone https://github.com/osmank3/otp-keys -b gnome-42-44
 Build and install:
 
 ```bash
-meson otp-keys /tmp/otp-keys-build
-ninja -C /tmp/otp-keys-build install
-gnome-extensions enable otp-keys@osmank3.net
+npm install
+npm run install:user
 ```
 
 Under X11, you may need to restart GNOME Shell (<kbd>Alt</kbd>+<kbd>F2</kbd>, <kbd>r</kbd>, <kbd>⏎</kbd>)

@@ -1,3 +1,0 @@
-option('local_install',
-    type: 'feature',
-    value : 'auto')

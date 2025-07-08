@@ -1,0 +1,27 @@
+{
+  "name": "otp-keys",
+  "version": "1.0.0",
+  "description": "GNOME Shell extension to show and copy OTP keys.",
+  "private": true,
+  "scripts": {
+    "clean": "shx rm -rf dist *.zip",
+    "build:protobuf-bundle": "npx pbjs -t static-module -w commonjs -o proto/static.js proto/otpauth-migration.proto && npx browserify proto/static.js -s MigrationPayloadRoot -o dist/vendor/protobuf-bundle.js && shx rm proto/static.js",
+    "build:assets": "shx mkdir -p dist && shx cp -r metadata.json extension.js prefs.js otplib.js totp.js LICENSE README.md dist/",
+    "build:schemas": "shx mkdir -p dist/schemas && shx cp schemas/*.gschema.xml dist/schemas/ && glib-compile-schemas dist/schemas/",
+    "build:locale": "shx mkdir -p dist/locale && for f in locale/*.po; do lang=$(basename \"$f\" .po); shx mkdir -p dist/locale/$lang/LC_MESSAGES; msgfmt \"$f\" -o dist/locale/$lang/LC_MESSAGES/otp-keys.mo; done",
+    "build": "npm run build:protobuf-bundle && npm run build:assets && npm run build:schemas && npm run build:locale",
+    "zip": "cd dist && zip -r ../otp-keys@osmank3.net.zip .",
+    "package": "npm run clean && npm run build && npm run zip",
+    "install:user": "npm run package && gnome-extensions install --force otp-keys@osmank3.net.zip && gnome-extensions enable otp-keys@osmank3.net",
+    "uninstall": "gnome-extensions uninstall otp-keys@osmank3.net && echo 'Uzantı kaldırıldı.'",
+    "locale:update-pot": "xgettext -o locale/otp-keys.pot -k_ --from-code=UTF-8 extension.js prefs.js",
+    "locale:update-po": "for f in locale/*.po; do msgmerge --update \"$f\" locale/otp-keys.pot; done",
+    "locale:update": "npm run locale:update-pot && npm run locale:update-po"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.0",
+    "protobufjs": "^7.5.3",
+    "protobufjs-cli": "^1.1.2",
+    "shx": "^0.3.4"
+  }
+}

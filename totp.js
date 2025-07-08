@@ -1,5 +1,8 @@
 import GLib from 'gi://GLib';
 
+const BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+const PADDING_CHAR = "=";
+
 //Converts a base32 string into a hex string. The padding is optional
 //Based on the Pure JavaScript TOTP Code generator by Kevin Gut https://cable.ayra.ch/totp/
 export function base32hex(data) {
@@ -16,10 +19,8 @@ export function base32hex(data) {
 
     //Return value
     let ret = "";
-    //Maps base 32 characters to their value (the value is the array index)
-    let map = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".split('');
     //Split data into groups of 8
-    let segments = (data.toUpperCase() + "========").match(/.{1,8}/g);
+    let segments = (data.toUpperCase() + PADDING_CHAR * 8).match(/.{1,8}/g);
     //Adding the "=" in the line above creates an unnecessary entry
     segments.pop();
     //Calculate padding length
@@ -36,9 +37,9 @@ export function base32hex(data) {
         //Process characters individually
         for (let j = 0; j < chars.length; j++) {
             //This is the same as a left shift by 32 characters but without the 32 bit JS int limitation
-            buffer *= map.length;
+            buffer *= BASE32_ALPHABET.length;
             //Map character to real value
-            let index = map.indexOf(chars[j]);
+            let index = BASE32_ALPHABET.indexOf(chars[j]);
             //Fix padding by ignoring it for now
             if (chars[j] === '=') {
                 index = 0;
@@ -65,6 +66,40 @@ export function base32hex(data) {
     }
 }
 
+export function decimals2base32(decimals) {
+    if (!decimals || decimals.length === 0) {
+        return "";
+    }
+
+    const buffer = new Uint8Array(decimals);
+
+    let base32String = "";
+    let bitPosition = 0;
+    const totalBits = buffer.length * 8;
+
+    while (bitPosition < totalBits) {
+        const byteIndex = Math.floor(bitPosition / 8);
+        const bitIndexInByte = bitPosition % 8;
+
+        const byte1 = buffer[byteIndex];
+        const byte2 = (byteIndex + 1 < buffer.length) ? buffer[byteIndex + 1] : 0;
+
+        const word = (byte1 << 8) | byte2;
+
+        // `16 - bitIndexInByte - 5`
+        const shift = 11 - bitIndexInByte;
+        const index = (word >> shift) & 0x1F;
+
+        base32String += BASE32_ALPHABET[index];
+        bitPosition += 5;
+    }
+
+    const paddingCount = (8 - (base32String.length % 8)) % 8;
+    base32String += PADDING_CHAR.repeat(paddingCount);
+
+    return base32String;
+}
+
 export function hex2bytes(hex) {
     let bytes = [];
     for (let i=0; i < hex.length; i += 2) {
@@ -79,7 +114,7 @@ export function hex2bytes(hex) {
 
 export function getCode(key, size = 6, epoc = 30, hashlib = "sha1") {//hashlib: sha1,sha256,sha512
     let keyBytes = hex2bytes(base32hex(key));
-    
+
     let now = parseInt(new Date().getTime() / 1000);
     let time = parseInt(now / epoc);
     let timehex = (time < 15.5 ? '0' : '') + Math.round(time).toString(16);

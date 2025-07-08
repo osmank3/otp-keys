@@ -1,0 +1,7 @@
+.idea/
+
+node_modules/
+vendor/
+package-lock.json
+dist/
+*.zip
