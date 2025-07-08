@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the otp-keys package.
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: otp-keys\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-13 10:16+0300\n"
+"POT-Creation-Date: 2025-07-09 00:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:82 prefs.js:196
+#: extension.js:82 prefs.js:199
 msgid "Code copied to clipboard."
 msgstr ""
 
@@ -33,7 +33,7 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: prefs.js:185
+#: prefs.js:188
 msgid "Otp link exported to clipboard."
 msgstr ""
 
@@ -77,7 +77,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: prefs.js:551 prefs.js:619 prefs.js:706
+#: prefs.js:551 prefs.js:619 prefs.js:707
 msgid "Save"
 msgstr ""
 
@@ -113,7 +113,7 @@ msgstr ""
 msgid "Algorithm"
 msgstr ""
 
-#: prefs.js:632 prefs.js:734
+#: prefs.js:632 prefs.js:746
 msgid "Fields must be filled"
 msgstr ""
 
@@ -121,17 +121,30 @@ msgstr ""
 msgid "Unaccepted character for issuer: '&amp;'"
 msgstr ""
 
-#. test availability
-#. Check secret code
-#. test availability
-#: prefs.js:648 prefs.js:739
+#: prefs.js:648 prefs.js:751
 msgid "Otp already available"
 msgstr ""
 
-#: prefs.js:689
+#: prefs.js:690
 msgid "Import Secret"
 msgstr ""
 
 #: prefs.js:718
+msgid "QR Image"
+msgstr ""
+
+#: prefs.js:730
 msgid "Secret Link"
+msgstr ""
+
+#: prefs.js:761
+msgid "QR Code imported"
+msgstr ""
+
+#: prefs.js:770
+msgid "Select QR Image"
+msgstr ""
+
+#: prefs.js:792
+msgid "Image does not contain QR Code"
 msgstr ""

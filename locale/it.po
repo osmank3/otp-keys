@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-13 10:16+0300\n"
+"POT-Creation-Date: 2025-07-09 00:17+0300\n"
 "PO-Revision-Date: 2023-01-23 19:04+01000\n"
 "Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:82 prefs.js:196
+#: extension.js:82 prefs.js:199
 msgid "Code copied to clipboard."
 msgstr "Codice copiato negli appunti."
 
@@ -32,7 +32,7 @@ msgstr ""
 msgid "Preferences"
 msgstr "Preferenze"
 
-#: prefs.js:185
+#: prefs.js:188
 #, fuzzy
 msgid "Otp link exported to clipboard."
 msgstr "Codice copiato negli appunti."
@@ -77,7 +77,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: prefs.js:551 prefs.js:619 prefs.js:706
+#: prefs.js:551 prefs.js:619 prefs.js:707
 msgid "Save"
 msgstr "Salva"
 
@@ -117,7 +117,7 @@ msgstr "Cifre"
 msgid "Algorithm"
 msgstr "Algoritmo"
 
-#: prefs.js:632 prefs.js:734
+#: prefs.js:632 prefs.js:746
 msgid "Fields must be filled"
 msgstr "I campi devono essere compilati"
 
@@ -125,22 +125,35 @@ msgstr "I campi devono essere compilati"
 msgid "Unaccepted character for issuer: '&amp;'"
 msgstr ""
 
-#. test availability
-#. Check secret code
-#. test availability
-#: prefs.js:648 prefs.js:739
+#: prefs.js:648 prefs.js:751
 msgid "Otp already available"
 msgstr ""
 
-#: prefs.js:689
+#: prefs.js:690
 #, fuzzy
 msgid "Import Secret"
 msgstr "Nuovo segreto"
 
 #: prefs.js:718
+msgid "QR Image"
+msgstr ""
+
+#: prefs.js:730
 #, fuzzy
 msgid "Secret Link"
 msgstr "Segreti"
+
+#: prefs.js:761
+msgid "QR Code imported"
+msgstr ""
+
+#: prefs.js:770
+msgid "Select QR Image"
+msgstr ""
+
+#: prefs.js:792
+msgid "Image does not contain QR Code"
+msgstr ""
 
 #~ msgid "New Secret"
 #~ msgstr "Nuovo segreto"

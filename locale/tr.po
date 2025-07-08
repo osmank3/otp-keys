@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-13 10:16+0300\n"
-"PO-Revision-Date: 2024-03-13 10:18+0300\n"
+"POT-Creation-Date: 2025-07-09 00:17+0300\n"
+"PO-Revision-Date: 2025-07-09 00:20+0300\n"
 "Last-Translator: Osman Karagöz <osmank3@gmail.com>\n"
 "Language-Team: \n"
 "Language: tr\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#: extension.js:82 prefs.js:196
+#: extension.js:82 prefs.js:199
 msgid "Code copied to clipboard."
 msgstr "Kod panoya kopyalandı."
 
@@ -34,7 +34,7 @@ msgstr "Anahtarlığın Kilidin Aç"
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: prefs.js:185
+#: prefs.js:188
 msgid "Otp link exported to clipboard."
 msgstr "Otp bağlantısı panoya aktarıldı."
 
@@ -78,7 +78,7 @@ msgstr "Dışa Aktar"
 msgid "Remove"
 msgstr "Sil"
 
-#: prefs.js:551 prefs.js:619 prefs.js:706
+#: prefs.js:551 prefs.js:619 prefs.js:707
 msgid "Save"
 msgstr "Kaydet"
 
@@ -114,7 +114,7 @@ msgstr "Rakamlar"
 msgid "Algorithm"
 msgstr "Algoritma"
 
-#: prefs.js:632 prefs.js:734
+#: prefs.js:632 prefs.js:746
 msgid "Fields must be filled"
 msgstr "Alanlar doldurulmalı"
 
@@ -122,18 +122,31 @@ msgstr "Alanlar doldurulmalı"
 msgid "Unaccepted character for issuer: '&amp;'"
 msgstr "Sağlayıcı için geçersiz karakter: '&amp;'"
 
-#. test availability
-#. Check secret code
-#. test availability
-#: prefs.js:648 prefs.js:739
+#: prefs.js:648 prefs.js:751
 msgid "Otp already available"
 msgstr "Otp zaten mevcut"
 
-#: prefs.js:689
+#: prefs.js:690
 msgid "Import Secret"
 msgstr "İçe Aktar"
 
 #: prefs.js:718
+msgid "QR Image"
+msgstr "QR Fotoğraf"
+
+#: prefs.js:730
 #, fuzzy
 msgid "Secret Link"
 msgstr "Gizli Kodlar"
+
+#: prefs.js:761
+msgid "QR Code imported"
+msgstr "QR Kodu içe aktarıldı"
+
+#: prefs.js:770
+msgid "Select QR Image"
+msgstr "QR Fotoğrafı Seçin"
+
+#: prefs.js:792
+msgid "Image does not contain QR Code"
+msgstr "Fotoğraf QR Kodu içermiyor"

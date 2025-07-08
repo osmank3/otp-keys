@@ -5,11 +5,14 @@ import Gdk from 'gi://Gdk';
 import Gtk from 'gi://Gtk';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
+import GdkPixpuf from 'gi://GdkPixbuf';
 
 import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 import * as Totp from './totp.js';
 import OtpLib from './otplib.js';
+
+import "./vendor/jsqr.js";
 
 const SETTINGS_OTP_LIST = "secret-list";
 const SETTINGS_NOTIFY = "notifications";
@@ -674,6 +677,7 @@ class ImportOtpRowExpanded extends Adw.ExpanderRow {
 
         this.install_action("otpRow.import", null, self => self._import());
         this.install_action("otpRow.save", null, self => self._save());
+        this.install_action("otpRow.qrimage", null, self => self._qrimage());
     }
 
     constructor(otpRoot) {
@@ -708,6 +712,17 @@ class ImportOtpRowExpanded extends Adw.ExpanderRow {
         });
         this.saveButton.set_action_name("");
         this.add_suffix(this.saveButton);
+
+        this.qrImageButton = new Gtk.Button({
+            child: new Adw.ButtonContent({
+                tooltip_text: _("QR Image"),
+                icon_name: "image-x-generic-symbolic",
+            }),
+            has_frame: false,
+            valign: Gtk.Align.CENTER,
+        });
+        this.qrImageButton.set_action_name("otpRow.qrimage");
+        this.add_suffix(this.qrImageButton);
     }
 
     setRows() {
@@ -725,13 +740,13 @@ class ImportOtpRowExpanded extends Adw.ExpanderRow {
         this.saveButton.set_action_name("otpRow.save");
     }
 
-    _save() {
+    _save(qr = false) {
         try {
             if (this.otpUriEntry.get_text() === "")
                 throw Error(_("Fields must be filled"));
             let otp = this.otpRoot.lib.parseURL(this.otpUriEntry.get_text());
             Totp.base32hex(otp.secret);//Check secret code
-            
+
             if (this.otpRoot.lib.getOtp(otp.username, otp.issuer) != null) //test availability
                 throw Error(_("Otp already available"));
             this.otpRoot.lib.saveOtp(otp);
@@ -741,9 +756,45 @@ class ImportOtpRowExpanded extends Adw.ExpanderRow {
             this.set_expanded(false);
             this.saveButton.set_action_name(null);
             this.otpUriEntry.set_text("");
+
+            if (qr) {
+                this.otpRoot.showToast(_("QR Code imported"));
+            }
         } catch (e) {
             this.otpRoot.showToast(e.message);
         }
+    }
+
+    _qrimage() {
+        let fileDialog = new Gtk.FileDialog({
+            title: _("Select QR Image"),
+            default_filter: new Gtk.FileFilter({
+                name: "Images",
+                mime_types: [
+                    "image/png",
+                    "image/bmp",
+                    "image/jpeg"
+                ],
+            }),
+        });
+        fileDialog.open(this.otpRoot.window, null, (source, result, data) => {
+            let file = fileDialog.open_finish(result);
+            let img = GdkPixpuf.Pixbuf.new_from_file(file.get_path());
+            img = img.add_alpha(false, 0, 0, 0);
+
+            try {
+                let code = jsQR(new Uint8ClampedArray(img.pixel_bytes.get_data()), img.width, img.height);
+
+                if (code) {
+                    this.otpUriEntry.set_text(code.data);
+                    this._save(true);
+                } else {
+                    throw Error(_("Image does not contain QR Code"));
+                }
+            } catch (e) {
+                this.otpRoot.showToast(e.message);
+            }
+        });
     }
 }
 
