@@ -182,6 +182,19 @@ class OtpList extends GObject.Object {
         this.items_changed(pos, 1, 0);
     }
 
+    move(oldPos, newPos) {
+        if (oldPos === newPos)
+            return;
+
+        let [movedItem] = this.otpList.splice(oldPos, 1);
+        this.otpList.splice(newPos, 0, movedItem);
+
+        this._saveOtpList();
+
+        this.items_changed(oldPos, 1, 0);
+        this.items_changed(newPos, 0, 1);
+    }
+
     export(otpParams) {
         this.otpList.forEach((otp) => {
             if (otp.username === otpParams[0] & otp.issuer === otpParams[1]) {
@@ -315,12 +328,35 @@ class OtpKeysSecretListWidget extends Adw.PreferencesGroup {
         });
         this.add(this._list);
 
+        let dropTarget = new Gtk.DropTarget({
+            actions: Gdk.DragAction.MOVE,
+        });
+        dropTarget.set_gtypes([GObject.TYPE_INT]);
+
+        dropTarget.connect('drop', (target, value, x, y) => {
+            let sourcePos = value;
+            let targetRow = this._list.get_row_at_y(y);
+
+            if (!targetRow) return false;
+
+            let targetPos = targetRow.get_index();
+
+            let nOtpItems = this.otpRoot.list.get_n_items();
+            if (targetPos >= nOtpItems) {
+                return false;
+            }
+
+            this.otpRoot.list.move(sourcePos, targetPos);
+            return true;
+        });
+        this._list.add_controller(dropTarget);
+
         this.set_header_suffix(new Gtk.Button({
-                action_name: 'otpList.refresh',
-                icon_name: 'view-refresh-symbolic',
-                has_frame: false,
-                valign: Gtk.Align.CENTER,
-                tooltip_text: _("Refresh")
+            action_name: 'otpList.refresh',
+            icon_name: 'view-refresh-symbolic',
+            has_frame: false,
+            valign: Gtk.Align.CENTER,
+            tooltip_text: _("Refresh")
         }));
 
         this._fillList();
@@ -502,6 +538,17 @@ class OtpRowExpanded extends Adw.ExpanderRow {
         this.otpRoot = otpRoot;
         this.otp = otp;
 
+        if (this.otp) {
+            let dragSource = new Gtk.DragSource({ actions: Gdk.DragAction.MOVE });
+
+            this.add_controller(dragSource);
+
+            dragSource.connect('prepare', (source, x, y) => {
+                let value = this.get_index();
+                return Gdk.ContentProvider.new_for_value(value);
+            });
+        }
+
         this._setButtons();
         this._setRows();
     }
@@ -536,6 +583,25 @@ class OtpRowExpanded extends Adw.ExpanderRow {
                 valign: Gtk.Align.CENTER,
                 tooltip_text: _("Remove")
             });
+
+            this.dimLabel = new Gtk.Image({
+                icon_name: "list-drag-handle-symbolic",
+                tooltip_text: _("Move")
+            });
+
+            let motion = new Gtk.EventControllerMotion();
+            this.dimLabel.add_controller(motion);
+
+            motion.connect("enter", () => {
+                let cursor = Gdk.Cursor.new_from_name("grab", null);
+                this.otpRoot.window.set_cursor(cursor);
+            });
+
+            motion.connect("leave", () => {
+                this.otpRoot.window.set_cursor(null);
+            });
+
+            this.add_prefix(this.dimLabel);
 
             this.add_suffix(this.edit);
             this.add_suffix(this.remove);
@@ -909,9 +975,9 @@ class QRScanner {
 
             let qr = jsQR(pixelData, width, height);
             if (qr) {
-                 this._callback(qr.data);
-                 this.stop();
-                 return GLib.SOURCE_REMOVE;
+                this._callback(qr.data);
+                this.stop();
+                return GLib.SOURCE_REMOVE;
             }
 
             return GLib.SOURCE_CONTINUE;

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-11 19:18+0300\n"
+"POT-Creation-Date: 2025-07-12 02:39+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:82 prefs.js:201
+#: extension.js:82 prefs.js:214
 msgid "Code copied to clipboard."
 msgstr ""
 
@@ -25,7 +25,7 @@ msgstr ""
 msgid "Copied code is: "
 msgstr ""
 
-#: extension.js:151 prefs.js:362
+#: extension.js:151 prefs.js:398
 msgid "Unlock Keyring"
 msgstr ""
 
@@ -33,138 +33,142 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: prefs.js:190
+#: prefs.js:203
 msgid "Otp link exported to clipboard."
 msgstr ""
 
-#: prefs.js:307
+#: prefs.js:320
 msgid "Secrets"
 msgstr ""
 
-#: prefs.js:323
+#: prefs.js:359
 msgid "Refresh"
 msgstr ""
 
-#: prefs.js:381
+#: prefs.js:417
 msgid "Settings"
 msgstr ""
 
-#: prefs.js:385
+#: prefs.js:421
 msgid "Show Notifications"
 msgstr ""
 
-#: prefs.js:392
+#: prefs.js:428
 msgid "Show Copy Icons"
 msgstr ""
 
-#: prefs.js:410
+#: prefs.js:446
 msgid "Copy"
 msgstr ""
 
-#: prefs.js:498
+#: prefs.js:534
 msgid "Add Secret"
 msgstr ""
 
-#: prefs.js:519 prefs.js:657
+#: prefs.js:566 prefs.js:723
 msgid "Edit"
 msgstr ""
 
-#: prefs.js:528
+#: prefs.js:575
 msgid "Export"
 msgstr ""
 
-#: prefs.js:537
+#: prefs.js:584
 msgid "Remove"
 msgstr ""
 
-#: prefs.js:553 prefs.js:621 prefs.js:712
+#: prefs.js:589
+msgid "Move"
+msgstr ""
+
+#: prefs.js:619 prefs.js:687 prefs.js:778
 msgid "Save"
 msgstr ""
 
-#: prefs.js:566
+#: prefs.js:632
 msgid "Username"
 msgstr ""
 
-#: prefs.js:571
+#: prefs.js:637
 msgid "Issuer"
 msgstr ""
 
-#: prefs.js:576
+#: prefs.js:642
 msgid "Secret"
 msgstr ""
 
-#: prefs.js:581
+#: prefs.js:647
 msgid "Period"
 msgstr ""
 
-#: prefs.js:583
+#: prefs.js:649
 msgid "30 seconds"
 msgstr ""
 
-#: prefs.js:583
+#: prefs.js:649
 msgid "60 seconds"
 msgstr ""
 
-#: prefs.js:588
+#: prefs.js:654
 msgid "Digits"
 msgstr ""
 
-#: prefs.js:599
+#: prefs.js:665
 msgid "Algorithm"
 msgstr ""
 
-#: prefs.js:634 prefs.js:762
+#: prefs.js:700 prefs.js:828
 msgid "Fields must be filled"
 msgstr ""
 
-#: prefs.js:636
+#: prefs.js:702
 msgid "Unaccepted character for issuer: '&amp;'"
 msgstr ""
 
-#: prefs.js:650 prefs.js:767
+#: prefs.js:716 prefs.js:833
 msgid "Otp already available"
 msgstr ""
 
-#: prefs.js:693
+#: prefs.js:759
 msgid "Import Secret"
 msgstr ""
 
-#: prefs.js:723
+#: prefs.js:789
 msgid "QR Image"
 msgstr ""
 
-#: prefs.js:734
+#: prefs.js:800
 msgid "QR Camera"
 msgstr ""
 
-#: prefs.js:746
+#: prefs.js:812
 msgid "Secret Link"
 msgstr ""
 
-#: prefs.js:777
+#: prefs.js:843
 msgid "QR Code imported"
 msgstr ""
 
-#: prefs.js:786
+#: prefs.js:852
 msgid "Select QR Image"
 msgstr ""
 
-#: prefs.js:808
+#: prefs.js:874
 msgid "Image does not contain QR Code"
 msgstr ""
 
-#: prefs.js:824
+#: prefs.js:890
 msgid "QR Code not recognised"
 msgstr ""
 
-#: prefs.js:840
+#: prefs.js:906
 msgid "QR Code Scan Stopped"
 msgstr ""
 
-#: prefs.js:859
+#: prefs.js:925
 msgid "No camera found"
 msgstr ""
 
-#: prefs.js:862
+#: prefs.js:928
 msgid "QR Code Scan Started"
 msgstr ""
