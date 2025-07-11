@@ -5,7 +5,9 @@ import Gdk from 'gi://Gdk';
 import Gtk from 'gi://Gtk';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-import GdkPixpuf from 'gi://GdkPixbuf';
+import GdkPixbuf from 'gi://GdkPixbuf';
+import Gst from 'gi://Gst';
+import GstApp from 'gi://GstApp';
 
 import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
@@ -678,6 +680,7 @@ class ImportOtpRowExpanded extends Adw.ExpanderRow {
         this.install_action("otpRow.import", null, self => self._import());
         this.install_action("otpRow.save", null, self => self._save());
         this.install_action("otpRow.qrimage", null, self => self._qrimage());
+        this.install_action("otpRow.qrcamera", null, self => self._qrcamera());
     }
 
     constructor(otpRoot) {
@@ -694,6 +697,8 @@ class ImportOtpRowExpanded extends Adw.ExpanderRow {
 
         this.setButtons()
         this.setRows()
+
+        this.qrScanner = null;
     }
 
     setButtons() {
@@ -723,6 +728,17 @@ class ImportOtpRowExpanded extends Adw.ExpanderRow {
         });
         this.qrImageButton.set_action_name("otpRow.qrimage");
         this.add_suffix(this.qrImageButton);
+
+        this.qrCameraButton = new Gtk.Button({
+            child: new Adw.ButtonContent({
+                tooltip_text: _("QR Camera"),
+                icon_name: "camera-photo-symbolic",
+            }),
+            has_frame: false,
+            valign: Gtk.Align.CENTER,
+        });
+        this.qrCameraButton.set_action_name("otpRow.qrcamera");
+        this.add_suffix(this.qrCameraButton);
     }
 
     setRows() {
@@ -779,7 +795,7 @@ class ImportOtpRowExpanded extends Adw.ExpanderRow {
         });
         fileDialog.open(this.otpRoot.window, null, (source, result, data) => {
             let file = fileDialog.open_finish(result);
-            let img = GdkPixpuf.Pixbuf.new_from_file(file.get_path());
+            let img = GdkPixbuf.Pixbuf.new_from_file(file.get_path());
             img = img.add_alpha(false, 0, 0, 0);
 
             try {
@@ -795,6 +811,134 @@ class ImportOtpRowExpanded extends Adw.ExpanderRow {
                 this.otpRoot.showToast(e.message);
             }
         });
+    }
+
+    _qrcamera() {
+        if (!this.qrScanner) {
+            this.qrCameraButton.get_child().set_icon_name("media-record-symbolic");
+            this.qrScanner = new QRScanner(this.otpRoot, (qrText) => {
+                if (qrText) {
+                    this.otpUriEntry.set_text(qrText);
+                    this._save(true);
+                } else {
+                    this.otpRoot.showToast(_("QR Code not recognised"));
+                }
+                this.qrScanner = null;
+                this.qrCameraButton.get_child().set_icon_name("camera-photo-symbolic");
+            });
+            try {
+                this.qrScanner.start();
+            } catch (e) {
+                this.otpRoot.showToast(e.message);
+                this.qrScanner = null;
+                this.qrCameraButton.get_child().set_icon_name("camera-photo-symbolic");
+            }
+        } else {
+            this.qrScanner.stop();
+            this.qrScanner = null;
+            this.qrCameraButton.get_child().set_icon_name("camera-photo-symbolic");
+            this.otpRoot.showToast(_("QR Code Scan Stopped"));
+        }
+    }
+}
+
+class QRScanner {
+    constructor(otpRoot, callback) {
+        this.otpRoot = otpRoot;
+        this._callback = callback;
+        this._pipeline = null;
+        this._appsink = null;
+        this._pollId = 0;
+    }
+
+    start() {
+        Gst.init(null);
+
+        let devices = this.listVideoDevices();
+        if (devices.length === 0) {
+            throw Error(_("No camera found"));
+        }
+
+        this.otpRoot.showToast(_("QR Code Scan Started"));
+
+        this._pipeline = Gst.parse_launch(
+            'v4l2src ! videoconvert ! video/x-raw,format=RGB,width=640,height=480 ! appsink name=appsink sync=false'
+        );
+
+        let rawSink = this._pipeline.get_by_name('appsink');
+        this._appsink = rawSink instanceof GstApp.AppSink
+            ? rawSink
+            : GstApp.AppSink.prototype.constructor.cast(rawSink);
+        this._appsink.set_property('emit-signals', false);
+        this._appsink.set_property('drop', true);
+        this._appsink.set_property('max-buffers', 1);
+
+        this._pipeline.set_state(Gst.State.PLAYING);
+
+        this._pollId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+            let sample = this._appsink.pull_sample();
+            if (!sample) {
+                return GLib.SOURCE_CONTINUE;
+            }
+            let buffer = sample.get_buffer();
+            let caps = sample.get_caps();
+            let structure = caps.get_structure(0);
+            let width = structure.get_value('width');
+            let height = structure.get_value('height');
+            let stride = width * 3;
+
+            let [result, map] = buffer.map(Gst.MapFlags.READ);
+            if (!result)
+                return GLib.SOURCE_CONTINUE;
+
+            let img = GdkPixbuf.Pixbuf.new_from_data(
+                map.data,
+                GdkPixbuf.Colorspace.RGB,
+                false, // has_alpha
+                8,     // bits_per_sample
+                width,
+                height,
+                stride,
+                null
+            );
+            img = img.add_alpha(false, 0, 0, 0);
+
+            let pixelData = new Uint8ClampedArray(img.pixel_bytes.get_data());
+
+            buffer.unmap(map);
+
+            let qr = jsQR(pixelData, width, height);
+            if (qr) {
+                 this._callback(qr.data);
+                 this.stop();
+                 return GLib.SOURCE_REMOVE;
+            }
+
+            return GLib.SOURCE_CONTINUE;
+        });
+    }
+
+    stop() {
+        if (this._pollId !== 0) {
+            GLib.source_remove(this._pollId);
+            this._pollId = 0;
+        }
+
+        if (this._pipeline) {
+            this._pipeline.set_state(Gst.State.NULL);
+            this._pipeline = null;
+        }
+    }
+
+    listVideoDevices() {
+        let monitor = new Gst.DeviceMonitor();
+        monitor.add_filter("Video/Source", null);
+        monitor.start();
+
+        let devices = monitor.get_devices();
+        monitor.stop();
+
+        return devices.map(device => device.get_display_name());
     }
 }
 
