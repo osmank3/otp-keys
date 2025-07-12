@@ -3,17 +3,22 @@
     <key name="secret-list" type="as">
       <default>[ ]</default>
       <summary>Secret keys list</summary>
-      <description>A list of secret and properties. Each secret has secretcode, username, epoctime(default 30) and digits(default 6)</description>
+      <description>A list of secrets ids</description>
     </key>
     <key name="notifications" type="b">
       <default>true</default>
       <summary>Notification status</summary>
-      <description>Whether notification shown on copying to clipboard actions</description>
+      <description>Whether notification showed on copying to clipboard actions</description>
     </key>
     <key name="copy-icons" type="b">
       <default>true</default>
       <summary>Copy icons</summary>
       <description>Whether or not the copy icons is displayed in the secret keys list</description>
+    </key>
+    <key name="menu-label-order" type="as">
+      <default>["username=true", "issuer=false", "code=true"]</default>
+      <summary>Menu label order</summary>
+      <description>A list of label order, username, issuer and code with active statuses</description>
     </key>
   </schema>
 </schemalist>

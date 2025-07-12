@@ -8,6 +8,7 @@ Show and copy otp keys
 * 30 and 60 seconds epoc time
 * 6 - 8 digits options
 * Import and export with otpauth://... and import with otpauth-migration://... links
+* Import QR from a camera or an image file
 
 ## Installation
 Normal users are recommended to get the extension from [extensions.gnome.org](https://extensions.gnome.org/extension/5697/otp-keys/).

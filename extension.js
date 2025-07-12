@@ -34,6 +34,7 @@ import OtpLib from './otplib.js';
 const SETTINGS_OTP_LIST = "secret-list";
 const SETTINGS_NOTIFY = "notifications";
 const SETTINGS_COPY_ICONS = "copy-icons";
+const SETTINGS_MENU_LABEL_ORDER = "menu-label-order";
 
 
 class OtpMenuItem extends PopupMenu.PopupBaseMenuItem {
@@ -47,19 +48,52 @@ class OtpMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._otp = otp;
         this._settings = settings;
 
-        this.label = new St.Label({
+        let labelStatus = {
+            username: true,
+            issuer: false,
+            code: true
+        }
+        let order = [];
+
+        for (let stat of this._settings.get_strv(SETTINGS_MENU_LABEL_ORDER)) {
+            let [key, status] = stat.split("=");
+            order.push(key);
+            labelStatus[key] = status === "true";
+        }
+
+        if (order.length === 0)
+            order = ["username", "issuer", "code"];
+
+        if (labelStatus.username === false && labelStatus.issuer === false && labelStatus.code === false) {
+            labelStatus.username = true;
+            labelStatus.code = true;
+        }
+
+        let usernameLabel = new St.Label({
             text: otp.username,
             x_expand: true,
             y_align: Clutter.ActorAlign.CENTER,
         });
-        this.add_child(this.label);
-        this.label_actor = this.label;
+
+        let issuerLabel = new St.Label({
+            text: otp.issuer,
+            x_expand: true,
+            y_align: Clutter.ActorAlign.CENTER,
+        });
 
         let code = new St.Label({
             text: this.human_readable_code(Totp.getCode(otp.secret, otp.digits, otp.period, otp.algorithm)),
             y_align: Clutter.ActorAlign.CENTER,
         });
-        this.add_child(code);
+
+        for (let item of order) {
+            if (item === "username" && labelStatus.username)
+                this.add_child(usernameLabel);
+            else if (item === "issuer" && labelStatus.issuer)
+                this.add_child(issuerLabel);
+            else if (item === "code" && labelStatus.code)
+                this.add_child(code);
+        }
 
         if (this._settings.get_boolean(SETTINGS_COPY_ICONS)) {
             let copyIcon = new St.Icon({

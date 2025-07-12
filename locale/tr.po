@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-12 02:39+0300\n"
-"PO-Revision-Date: 2025-07-12 02:40+0300\n"
+"POT-Creation-Date: 2025-07-13 00:50+0300\n"
+"PO-Revision-Date: 2025-07-13 00:51+0300\n"
 "Last-Translator: Osman Karagöz <osmank3@gmail.com>\n"
 "Language-Team: \n"
 "Language: tr\n"
@@ -18,158 +18,170 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#: extension.js:82 prefs.js:214
+#: extension.js:116 prefs.js:215
 msgid "Code copied to clipboard."
 msgstr "Kod panoya kopyalandı."
 
-#: extension.js:82
+#: extension.js:116
 msgid "Copied code is: "
 msgstr "Kopyalanan kod: "
 
-#: extension.js:151 prefs.js:398
+#: extension.js:186 prefs.js:397
 msgid "Unlock Keyring"
 msgstr "Anahtarlığın Kilidin Aç"
 
-#: extension.js:164
+#: extension.js:199
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: prefs.js:203
+#: prefs.js:204
 msgid "Otp link exported to clipboard."
 msgstr "Otp bağlantısı panoya aktarıldı."
 
-#: prefs.js:320
+#: prefs.js:319
 msgid "Secrets"
 msgstr "Gizli Kodlar"
 
-#: prefs.js:359
+#: prefs.js:358
 msgid "Refresh"
 msgstr "Yenile"
 
-#: prefs.js:417
+#: prefs.js:416
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: prefs.js:421
+#: prefs.js:422
 msgid "Show Notifications"
 msgstr "Bildirimleri Göster"
 
-#: prefs.js:428
+#: prefs.js:429
 msgid "Show Copy Icons"
 msgstr "Kopyalama Sembolünü Göster"
 
-#: prefs.js:446
-msgid "Copy"
-msgstr "Kopyala"
-
-#: prefs.js:534
-msgid "Add Secret"
-msgstr "Gizli Kod Ekle"
-
-#: prefs.js:566 prefs.js:723
-msgid "Edit"
-msgstr "Düzenle"
-
-#: prefs.js:575
-msgid "Export"
-msgstr "Dışa Aktar"
-
-#: prefs.js:584
-msgid "Remove"
-msgstr "Sil"
-
-#: prefs.js:589
-msgid "Move"
-msgstr "Taşı"
-
-#: prefs.js:619 prefs.js:687 prefs.js:778
-msgid "Save"
-msgstr "Kaydet"
-
-#: prefs.js:632
+#: prefs.js:436 prefs.js:451 prefs.js:804
 msgid "Username"
 msgstr "Kullanıcı Adı"
 
-#: prefs.js:637
+#: prefs.js:437 prefs.js:452 prefs.js:809
 msgid "Issuer"
 msgstr "Sağlayıcı"
 
-#: prefs.js:642
+#: prefs.js:438 prefs.js:453
+msgid "Code"
+msgstr "Kod"
+
+#: prefs.js:471
+msgid "Extension Menu Rows Label Order"
+msgstr "Eklenti Menüsü Satırları Etiket Sıralaması"
+
+#: prefs.js:472
+msgid "Extension menu rows content states and order"
+msgstr "Eklenti menüsü satırları içerik durumlari ve sıraları"
+
+#: prefs.js:519 prefs.js:761
+msgid "Move"
+msgstr "Taşı"
+
+#: prefs.js:618
+msgid "Copy"
+msgstr "Kopyala"
+
+#: prefs.js:706
+msgid "Add Secret"
+msgstr "Gizli Kod Ekle"
+
+#: prefs.js:738 prefs.js:895
+msgid "Edit"
+msgstr "Düzenle"
+
+#: prefs.js:747
+msgid "Export"
+msgstr "Dışa Aktar"
+
+#: prefs.js:756
+msgid "Remove"
+msgstr "Sil"
+
+#: prefs.js:791 prefs.js:859 prefs.js:950
+msgid "Save"
+msgstr "Kaydet"
+
+#: prefs.js:814
 msgid "Secret"
 msgstr "Gizli Kod"
 
-#: prefs.js:647
+#: prefs.js:819
 msgid "Period"
 msgstr "Periyot"
 
-#: prefs.js:649
+#: prefs.js:821
 msgid "30 seconds"
 msgstr "30 saniye"
 
-#: prefs.js:649
+#: prefs.js:821
 msgid "60 seconds"
 msgstr "60 saniye"
 
-#: prefs.js:654
+#: prefs.js:826
 msgid "Digits"
 msgstr "Rakamlar"
 
-#: prefs.js:665
+#: prefs.js:837
 msgid "Algorithm"
 msgstr "Algoritma"
 
-#: prefs.js:700 prefs.js:828
+#: prefs.js:872 prefs.js:1000
 msgid "Fields must be filled"
 msgstr "Alanlar doldurulmalı"
 
-#: prefs.js:702
+#: prefs.js:874
 msgid "Unaccepted character for issuer: '&amp;'"
 msgstr "Sağlayıcı için geçersiz karakter: '&amp;'"
 
-#: prefs.js:716 prefs.js:833
+#: prefs.js:888 prefs.js:1005
 msgid "Otp already available"
 msgstr "Otp zaten mevcut"
 
-#: prefs.js:759
+#: prefs.js:931
 msgid "Import Secret"
 msgstr "İçe Aktar"
 
-#: prefs.js:789
+#: prefs.js:961
 msgid "QR Image"
 msgstr "QR Fotoğraf"
 
-#: prefs.js:800
+#: prefs.js:972
 msgid "QR Camera"
 msgstr "QR Kamera"
 
-#: prefs.js:812
+#: prefs.js:984
 msgid "Secret Link"
 msgstr "Gizli Kodlar"
 
-#: prefs.js:843
+#: prefs.js:1015
 msgid "QR Code imported"
 msgstr "QR Kodu içe aktarıldı"
 
-#: prefs.js:852
+#: prefs.js:1024
 msgid "Select QR Image"
 msgstr "QR Fotoğrafı Seçin"
 
-#: prefs.js:874
+#: prefs.js:1046
 msgid "Image does not contain QR Code"
 msgstr "Fotoğraf QR Kodu içermiyor"
 
-#: prefs.js:890
+#: prefs.js:1062
 msgid "QR Code not recognised"
 msgstr "QR Kodu tanınamadı"
 
-#: prefs.js:906
+#: prefs.js:1078
 msgid "QR Code Scan Stopped"
 msgstr "QR Kodu Tarama Durduruldu"
 
-#: prefs.js:925
+#: prefs.js:1097
 msgid "No camera found"
 msgstr "Kamera bulunamadı"
 
-#: prefs.js:928
+#: prefs.js:1100
 msgid "QR Code Scan Started"
 msgstr "QR Kodu Tarama Başlatıldı"

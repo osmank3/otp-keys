@@ -19,6 +19,7 @@ import "./vendor/jsqr.js";
 const SETTINGS_OTP_LIST = "secret-list";
 const SETTINGS_NOTIFY = "notifications";
 const SETTINGS_COPY_ICONS = "copy-icons";
+const SETTINGS_MENU_LABEL_ORDER = "menu-label-order";
 
 class OtpRoot {
     constructor(extension) {
@@ -415,19 +416,192 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup{
             title: _("Settings")
         });
 
+        this.otpRoot = otpRoot;
+
         this.showNotificationSwitch = new Adw.SwitchRow({
             title: _("Show Notifications")
         })
         this.add(this.showNotificationSwitch);
 
-        otpRoot.settings.bind(SETTINGS_NOTIFY, this.showNotificationSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
+        this.otpRoot.settings.bind(SETTINGS_NOTIFY, this.showNotificationSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
 
         this.showCopyIconsSwitch = new Adw.SwitchRow({
             title: _("Show Copy Icons")
         })
         this.add(this.showCopyIconsSwitch);
 
-        otpRoot.settings.bind(SETTINGS_COPY_ICONS, this.showCopyIconsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
+        this.otpRoot.settings.bind(SETTINGS_COPY_ICONS, this.showCopyIconsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
+
+        this.flowboxSwitchesLabels = {
+            username: _("Username"),
+            issuer: _("Issuer"),
+            code: _("Code")
+        };
+        this.flowboxSwitches = [];
+
+        for (let switchSetting of this.otpRoot.settings.get_strv(SETTINGS_MENU_LABEL_ORDER)) {
+            let [key, status] = switchSetting.split("=");
+            this.flowboxSwitches.push({
+                id: key, label: this.flowboxSwitchesLabels[key], status: status === "true"
+            });
+        }
+
+        if (this.flowboxSwitches.length === 0) {
+            this.flowboxSwitches = [
+                { id: 'username', label: _("Username"), status: true },
+                { id: 'issuer', label: _("Issuer"), status: false },
+                { id: 'code', label: _("Code"), status: true },
+            ];
+        }
+
+        this.changedId = otpRoot.settings.connect(`changed::${SETTINGS_MENU_LABEL_ORDER}`,
+            () => this._populateFlowbox());
+
+        this.flowbox = new Gtk.FlowBox({
+            valign: Gtk.Align.START,
+            max_children_per_line: 3,
+            min_children_per_line: 3,
+            selection_mode: Gtk.SelectionMode.NONE,
+            css_classes: ['boxed-list'],
+        });
+
+        this.showLabelOrder = new Adw.ExpanderRow({
+            expanded: false,
+            enable_expansion: true,
+            title: _("Extension Menu Rows Label Order"),
+            subtitle: _("Extension menu rows content states and order")
+        });
+        this.showLabelOrder.add_row(this.flowbox);
+        this.add(this.showLabelOrder);
+
+        this._populateFlowbox();
+
+        const dropTarget = new Gtk.DropTarget({
+            actions: Gdk.DragAction.MOVE,
+        });
+        dropTarget.set_gtypes([GObject.TYPE_INT]);
+
+        dropTarget.connect('drop', (target, value, x, y) => {
+            const sourcePos = value;
+            const targetChild = this.flowbox.get_child_at_pos(x, y);
+
+            if (!targetChild) return false;
+
+            const targetPos = targetChild.get_index();
+
+            if (sourcePos < 0 || targetPos < 0 || sourcePos === targetPos) {
+                return false;
+            }
+
+            const [movedItem] = this.flowboxSwitches.splice(sourcePos, 1);
+            this.flowboxSwitches.splice(targetPos, 0, movedItem);
+
+            this._saveMenuOrder();
+            this._populateFlowbox();
+
+            return true;
+        });
+        this.flowbox.add_controller(dropTarget);
+    }
+
+    _createFlowboxSwitch(item) {
+        let box = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            spacing: 6,
+            margin_top: 10,
+            margin_bottom: 10,
+            margin_start: 6,
+            margin_end: 6,
+        });
+
+        let dimLabel = new Gtk.Image({
+            icon_name: "list-drag-handle-symbolic",
+            tooltip_text: _("Move")
+        });
+        let gtkSwitch = new Gtk.Switch({
+            valign: Gtk.Align.CENTER,
+            state: item.status,
+            active: item.status
+        });
+        let label = new Gtk.Label({
+            label: item.label,
+            hexpand: true,
+            xalign: 0
+        });
+
+        gtkSwitch.connect('state-set', (widget, state) => {
+            const switchItem = this.flowboxSwitches.find(s => s.id === item.id);
+            if (switchItem) {
+                switchItem.status = state;
+            }
+
+            this._saveMenuOrder();
+
+            return Gdk.EVENT_PROPAGATE;
+        });
+
+        let motion = new Gtk.EventControllerMotion();
+        dimLabel.add_controller(motion);
+
+        motion.connect("enter", () => {
+            let cursor = Gdk.Cursor.new_from_name("grab", null);
+            this.otpRoot.window.set_cursor(cursor);
+        });
+
+        motion.connect("leave", () => {
+            this.otpRoot.window.set_cursor(null);
+        });
+
+        box.append(dimLabel);
+        box.append(gtkSwitch);
+        box.append(label);
+
+        const child = new Gtk.FlowBoxChild();
+        child.set_child(box);
+
+        const dragSource = new Gtk.DragSource({ actions: Gdk.DragAction.MOVE });
+        dragSource.connect('prepare', (source, x, y) => {
+            const value = child.get_index();
+            return Gdk.ContentProvider.new_for_value(value);
+        });
+        child.add_controller(dragSource);
+
+        return child;
+    }
+
+    _saveMenuOrder() {
+        this.otpRoot.settings.block_signal_handler(this.changedId);
+        this.otpRoot.settings.set_strv(
+            SETTINGS_MENU_LABEL_ORDER,
+            this.flowboxSwitches.map(item => `${item.id}=${item.status}`)
+        );
+        this.otpRoot.settings.unblock_signal_handler(this.changedId)
+    }
+
+    _populateFlowbox() {
+        while (this.flowbox.get_last_child() != null) {
+            this.flowbox.remove(this.flowbox.get_last_child());
+        }
+
+        for (let switchSetting of this.otpRoot.settings.get_strv(SETTINGS_MENU_LABEL_ORDER)) {
+            let [key, status] = switchSetting.split("=");
+            let isAdded = false;
+            for (let item of this.flowboxSwitches) {
+                if (item.id === key) {
+                    isAdded = true;
+                    item.status = status === "true";
+                }
+            }
+            if (!isAdded) {
+                this.flowboxSwitches.push({
+                    id: key, label: this.flowboxSwitchesLabels[key], status: status === "true"
+                });
+            }
+        }
+
+        this.flowboxSwitches.forEach(item => {
+            this.flowbox.append(this._createFlowboxSwitch(item));
+        });
     }
 }
 
