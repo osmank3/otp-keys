@@ -26,7 +26,7 @@ const OTP_TYPE = {
 
 export default class OtpLib {
     constructor() {
-        this._otpSchema = new Secret.Schema(
+        this._oldOtpSchema = new Secret.Schema(
             "org.gnome.shell.extensions.otp-keys",
             Secret.SchemaFlags.NONE,
             {
@@ -34,22 +34,47 @@ export default class OtpLib {
                 "issuer": Secret.SchemaAttributeType.STRING
             }
         );
+        this._otpSchema = new Secret.Schema(
+            "org.gnome.shell.extensions.otp-keys",
+            Secret.SchemaFlags.NONE,
+            {
+                "otpId": Secret.SchemaAttributeType.STRING
+            }
+        );
     }
 
-    getOtp(username, issuer){
+    createId(data) {
+        let bytes = new TextEncoder().encode(data);
+        let checksum = new GLib.Checksum(GLib.ChecksumType.SHA1);
+        checksum.update(bytes);
+        return checksum.get_string();
+    }
+
+    getOldOtp(username, issuer){
         let attr = {"username": username, "issuer": issuer};
+        let otpURL = Secret.password_lookup_sync(this._oldOtpSchema, attr, null);
+        return otpURL === null ? null : this.parseURL(otpURL);
+    }
+
+    getOtp(id){
+        let attr = {"otpId": id};
         let otpURL = Secret.password_lookup_sync(this._otpSchema, attr, null);
         return otpURL === null ? null : this.parseURL(otpURL);
     }
 
     saveOtp(otp) {
-        let attr = {"username": otp.username, "issuer": otp.issuer};
+        let attr = {"otpId": this.createId(otp.secret)};
         return Secret.password_store_sync(this._otpSchema, attr,
             Secret.COLLECTION_DEFAULT, "otp-key", this.makeURL(otp), null);
     }
 
-    removeOtp(otp) {
-        let attr = {"username": otp.username, "issuer": otp.issuer};
+    removeOtp(otp, isOld = false) {
+        let attr;
+        if (isOld) {
+            attr = {"username": otp.username, "issuer": otp.issuer};
+            return Secret.password_clear_sync(this._oldOtpSchema, attr, null);
+        }
+        attr = {"otpId": this.createId(otp.secret)};
         return Secret.password_clear_sync(this._otpSchema, attr, null);
     }
 
@@ -60,8 +85,8 @@ export default class OtpLib {
     }
 
     unlockKeyring(parent) {
-        //Add test key to keyring for unlocking keyring
-        let attr = {"username": "username", "issuer": "issuer"};
+        //Add a test key to the keyring for unlocking keyring
+        let attr = {"otpId": "testValue"};
         Secret.password_store(this._otpSchema, attr,
             Secret.COLLECTION_DEFAULT, "otp-key-test", "test value", null, (source, result, data) => {
             if (this.isKeyringUnlocked()) {

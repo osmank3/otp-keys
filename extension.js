@@ -123,7 +123,7 @@ class Indicator extends PanelMenu.Button {
             let otp = {}
             let username = "";
             if (stringSecret.split(":").length === 5) {
-                //migrate to new one
+                //Oldest saved secret on settings
                 let [secret, username, period, digits, algorithm] = stringSecret.split(":");
                 otp = {
                     "secret": secret,
@@ -133,13 +133,14 @@ class Indicator extends PanelMenu.Button {
                     "algorithm": algorithm,
                     "issuer": "otp-key"
                 };
-                this._otpLib.saveOtp(otp);
-                stringSecret = `${username}:${otp.issuer}`;
-            }
+            } else if (stringSecret.includes(":")){
+                //Old saved secret on keyring
+                let issuer = "otp-key";
+                [username, issuer] = stringSecret.split(":");
+                otp = this._otpLib.getOldOtp(username, issuer);
+            } else
+                otp = this._otpLib.getOtp(stringSecret);
 
-            let issuer = "otp-key";
-            [username, issuer] = stringSecret.split(":");
-            otp = this._otpLib.getOtp(username, issuer);
             if (otp !== null)
                 this._otpList.push(otp);
         }

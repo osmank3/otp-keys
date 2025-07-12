@@ -217,21 +217,11 @@ class OtpList extends GObject.Object {
         });
     }
 
-    getOtp(secret) {
-        let found = null;
-        this.otpList.forEach((otp) => {
-            if (otp.secret === secret) {
-                found = otp;
-            }
-        });
-        return found;
-    }
-
     _saveOtpList() {
         this.otpRoot.settings.block_signal_handler(this.changedId);
         this.otpRoot.settings.set_strv(
             SETTINGS_OTP_LIST,
-            this.otpList.map(otp => `${otp.username}:${otp.issuer}`)
+            this.otpList.map(otp => this.otpRoot.lib.createId(otp.secret))
         );
         this.otpRoot.settings.unblock_signal_handler(this.changedId)
     }
@@ -246,7 +236,7 @@ class OtpList extends GObject.Object {
                 let otp = {};
                 let username = "";
                 if (stringSecret.split(":").length === 5) {
-                    //migrate to new one
+                    //migrate oldest to a new one
                     let [secret, username, period, digits, algorithm] = stringSecret.split(":");
                     otp = {
                         "secret": secret,
@@ -257,13 +247,21 @@ class OtpList extends GObject.Object {
                         "issuer": "otp-key"
                     };
                     this.otpRoot.lib.saveOtp(otp);
-                    stringSecret = `${username}:${otp.issuer}`;
+                    stringSecret = this.otpRoot.lib.createId(otp.secret);
+                    migrated = true;
+                } else if (stringSecret.includes(":")) {
+                    //migrate old to a new one
+                    let issuer = "otp-key";
+                    [username, issuer] = stringSecret.split(":");
+                    otp = this.otpRoot.lib.getOldOtp(username, issuer);
+                    this.otpRoot.lib.saveOtp(otp);
+                    this.otpRoot.lib.removeOtp(otp, true);
+                    stringSecret = this.otpRoot.lib.createId(otp.secret);
                     migrated = true;
                 }
 
-                let issuer = "otp-key";
-                [username, issuer] = stringSecret.split(":");
-                otp = this.otpRoot.lib.getOtp(username, issuer);
+                otp = this.otpRoot.lib.getOtp(stringSecret);
+
                 if (otp !== null)
                     this.otpList.push(new Otp(otp));
             }
@@ -712,7 +710,7 @@ class OtpRowExpanded extends Adw.ExpanderRow {
             if (this.otp) {
                 this.otpRoot.list.remove([this.otp.username, this.otp.issuer]);
             }
-            if (this.otpRoot.lib.getOtp(otp.username, otp.issuer) != null) //test availability
+            if (this.otpRoot.lib.getOtp(this.otpRoot.lib.createId(otp.secret)) != null) //test availability
                 throw _("Otp already available");
             this.otpRoot.lib.saveOtp(otp);
             this.otpRoot.list.append(otp);
@@ -829,7 +827,7 @@ class ImportOtpRowExpanded extends Adw.ExpanderRow {
             let otp = this.otpRoot.lib.parseURL(this.otpUriEntry.get_text());
             Totp.base32hex(otp.secret);//Check secret code
 
-            if (this.otpRoot.lib.getOtp(otp.username, otp.issuer) != null) //test availability
+            if (this.otpRoot.lib.getOtp(this.otpRoot.lib.createId(otp.secret)) != null) //test availability
                 throw Error(_("Otp already available"));
             this.otpRoot.lib.saveOtp(otp);
             this.otpRoot.list.append(otp);
