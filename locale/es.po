@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-12 02:39+0300\n"
-"PO-Revision-Date: 2023-10-28T12:36:51+02:00\n"
+"PO-Revision-Date: 2025-07-12T13:42:00+02:00\n"
 "Last-Translator: Óscar García Amor <ogarcia@connectical.com>\n"
 "Language-Team: \n"
 "Language: es\n"
@@ -23,7 +23,7 @@ msgstr "Código copiado en el portapapeles."
 
 #: extension.js:82
 msgid "Copied code is: "
-msgstr ""
+msgstr "El código copiado es:"
 
 #: extension.js:151 prefs.js:398
 msgid "Unlock Keyring"
@@ -79,7 +79,7 @@ msgstr "Eliminar"
 
 #: prefs.js:589
 msgid "Move"
-msgstr ""
+msgstr "Mover"
 
 #: prefs.js:619 prefs.js:687 prefs.js:778
 msgid "Save"
@@ -123,7 +123,7 @@ msgstr "Los campos deben rellenarse"
 
 #: prefs.js:702
 msgid "Unaccepted character for issuer: '&amp;'"
-msgstr ""
+msgstr "Carácter no aceptado para el emisor: '&amp;'"
 
 #: prefs.js:716 prefs.js:833
 msgid "Otp already available"
@@ -135,11 +135,11 @@ msgstr "Importar Secreto"
 
 #: prefs.js:789
 msgid "QR Image"
-msgstr ""
+msgstr "Imagen QR"
 
 #: prefs.js:800
 msgid "QR Camera"
-msgstr ""
+msgstr "Cámara QR"
 
 #: prefs.js:812
 msgid "Secret Link"
@@ -147,28 +147,28 @@ msgstr "Enlace del secreto"
 
 #: prefs.js:843
 msgid "QR Code imported"
-msgstr ""
+msgstr "Código QR importado"
 
 #: prefs.js:852
 msgid "Select QR Image"
-msgstr ""
+msgstr "Selecciona la imagen QR"
 
 #: prefs.js:874
 msgid "Image does not contain QR Code"
-msgstr ""
+msgstr "La imagen no contiene ningún código QR"
 
 #: prefs.js:890
 msgid "QR Code not recognised"
-msgstr ""
+msgstr "Código QR no reconocido"
 
 #: prefs.js:906
 msgid "QR Code Scan Stopped"
-msgstr ""
+msgstr "Escaneo de código QR detenido"
 
 #: prefs.js:925
 msgid "No camera found"
-msgstr ""
+msgstr "No se ha encontrado ninguna cámara"
 
 #: prefs.js:928
 msgid "QR Code Scan Started"
-msgstr ""
+msgstr "Escaneo de código QR iniciado"
