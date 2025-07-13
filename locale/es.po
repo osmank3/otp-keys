@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-13 00:50+0300\n"
-"PO-Revision-Date: 2025-07-12T13:42:00+02:00\n"
+"PO-Revision-Date: 2025-07-13T12:33:00+02:00\n"
 "Last-Translator: Óscar García Amor <ogarcia@connectical.com>\n"
 "Language-Team: \n"
 "Language: es\n"
@@ -67,15 +67,15 @@ msgstr "Emisor"
 
 #: prefs.js:438 prefs.js:453
 msgid "Code"
-msgstr ""
+msgstr "Código"
 
 #: prefs.js:471
 msgid "Extension Menu Rows Label Order"
-msgstr ""
+msgstr "Orden de las etiquetas de las filas del menú de la extensión"
 
 #: prefs.js:472
 msgid "Extension menu rows content states and order"
-msgstr ""
+msgstr "Estados y orden del contenido de las filas del menú de extensión"
 
 #: prefs.js:519 prefs.js:761
 msgid "Move"
