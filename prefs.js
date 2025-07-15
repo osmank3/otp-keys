@@ -884,8 +884,8 @@ class OtpRowExpanded extends Adw.ExpanderRow {
             if (this.otp) {
                 this.otpRoot.list.remove([this.otp.username, this.otp.issuer]);
             }
-            if (this.otpRoot.lib.getOtp(this.otpRoot.lib.createId(otp.secret)) != null) //test availability
-                throw _("Otp already available");
+            if (this.otpRoot.lib.getOtp(this.otpRoot.lib.createId(otp.secret)) !== null) //test availability
+                throw Error(_("Otp already available"));
             this.otpRoot.lib.saveOtp(otp);
             this.otpRoot.list.append(otp);
 
@@ -1001,7 +1001,7 @@ class ImportOtpRowExpanded extends Adw.ExpanderRow {
             let otp = this.otpRoot.lib.parseURL(this.otpUriEntry.get_text());
             Totp.base32hex(otp.secret);//Check secret code
 
-            if (this.otpRoot.lib.getOtp(this.otpRoot.lib.createId(otp.secret)) != null) //test availability
+            if (this.otpRoot.lib.getOtp(this.otpRoot.lib.createId(otp.secret)) !== null) //test availability
                 throw Error(_("Otp already available"));
             this.otpRoot.lib.saveOtp(otp);
             this.otpRoot.list.append(otp);
