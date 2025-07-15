@@ -71,11 +71,11 @@ msgstr "Código"
 
 #: prefs.js:471
 msgid "Extension Menu Rows Label Order"
-msgstr "Orden de las etiquetas de las filas del menú de la extensión"
+msgstr "Orden de las etiquetas en las filas del menú de la extensión"
 
 #: prefs.js:472
 msgid "Extension menu rows content states and order"
-msgstr "Estados y orden del contenido de las filas del menú de extensión"
+msgstr "Estados y orden del contenido de las filas en el menú de extensión"
 
 #: prefs.js:519 prefs.js:761
 msgid "Move"
@@ -139,7 +139,7 @@ msgstr "Carácter no aceptado para el emisor: '&amp;'"
 
 #: prefs.js:888 prefs.js:1005
 msgid "Otp already available"
-msgstr "OTP disponible"
+msgstr "Este OTP ya está disponible"
 
 #: prefs.js:931
 msgid "Import Secret"
