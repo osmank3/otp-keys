@@ -20,7 +20,7 @@ export function base32hex(data) {
     //Return value
     let ret = "";
     //Split data into groups of 8
-    let segments = (data.toUpperCase() + PADDING_CHAR * 8).match(/.{1,8}/g);
+    let segments = (data.toUpperCase() + PADDING_CHAR.repeat(8)).match(/.{1,8}/g);
     //Adding the "=" in the line above creates an unnecessary entry
     segments.pop();
     //Calculate padding length
