@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "shx rm -rf dist *.zip",
     "build:protobuf-bundle": "npx pbjs -t static-module -w commonjs -o proto/static.js proto/otpauth-migration.proto && npx browserify proto/static.js -s MigrationPayloadRoot -o dist/vendor/protobuf-bundle.js && shx rm proto/static.js",
-    "build:assets": "shx mkdir -p dist && shx cp -r metadata.json extension.js prefs.js otplib.js totp.js LICENSE README.md dist/",
+    "build:assets": "shx mkdir -p dist && shx cp -r metadata.json extension.js prefs.js otplib.js totp.js stylesheet.css LICENSE README.md dist/",
     "build:vendor": "shx mkdir -p dist/vendor && npx browserify -r jsqr -s jsQR -o dist/vendor/jsqr.js",
     "build:schemas": "shx mkdir -p dist/schemas && shx cp schemas/*.gschema.xml dist/schemas/ && glib-compile-schemas dist/schemas/",
     "build:locale": "shx mkdir -p dist/locale && for f in locale/*.po; do lang=$(basename \"$f\" .po); shx mkdir -p dist/locale/$lang/LC_MESSAGES; msgfmt \"$f\" -o dist/locale/$lang/LC_MESSAGES/otp-keys.mo; done",

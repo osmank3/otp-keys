@@ -148,6 +148,9 @@ class Indicator extends PanelMenu.Button {
                 () => this._fillList());
 
         this._otpList = [];
+        this._filter = "";
+
+        this._prepareMenu();
         this._fillList();
     }
 
@@ -181,20 +184,58 @@ class Indicator extends PanelMenu.Button {
     }
 
     _fillList() {
-        this.menu.removeAll();
+        this._scrollOtpList.removeAll();
         if (this._otpLib.isKeyringUnlocked() === false) {
             let unlockkeyring = new PopupMenu.PopupMenuItem(_("Unlock Keyring"));
             unlockkeyring.connect('activate', () => {
                 this._otpLib.unlockKeyring(this);
             });
-            this.menu.addMenuItem(unlockkeyring);
+            this._scrollOtpList.addMenuItem(unlockkeyring);
         } else {
             this._sync();
             this._otpList.forEach(otp => {
-                let item = new OtpMenuItem(otp, this._settings);
-                this.menu.addMenuItem(item);
+                if (this._filter === "" ||
+                    otp.username.toLowerCase().includes(this._filter) ||
+                    otp.issuer.toLowerCase().includes(this._filter)) {
+                        let item = new OtpMenuItem(otp, this._settings);
+                        this._scrollOtpList.addMenuItem(item);
+                }
             });
         }
+    }
+
+    _prepareMenu() {
+        let searchEntryItem = new PopupMenu.PopupBaseMenuItem({
+            reactive: false,
+            can_focus: false
+        });
+        this._searchEntry = new St.Entry({
+            name: 'searchEntry',
+            x_expand: true,
+            can_focus: true,
+            hint_text: _('Search...'),
+            track_hover: true,
+            primary_icon: new St.Icon({
+                icon_name: 'edit-find-symbolic',
+                icon_size: 20
+            })
+        });
+        this._searchEntry.get_clutter_text().connect(
+            'text-changed',
+            this._onSearchFilter.bind(this)
+        );
+        searchEntryItem.add_child(this._searchEntry);
+        this.menu.addMenuItem(searchEntryItem);
+
+        this._scrollOtpList = new PopupMenu.PopupMenuSection();
+        let scrollView = new St.ScrollView({
+            overlay_scrollbars: true,
+            style_class: 'scroll-view',
+        });
+        let scrollViewSection = new PopupMenu.PopupMenuSection();
+        scrollView.add_child(this._scrollOtpList.actor);
+        scrollViewSection.actor.add_child(scrollView);
+        this.menu.addMenuItem(scrollViewSection);
 
         let preferences = new PopupMenu.PopupMenuItem(_("Preferences"));
         preferences.connect('activate', () => {
@@ -203,8 +244,17 @@ class Indicator extends PanelMenu.Button {
         this.menu.addMenuItem(preferences);
     }
 
+    _onSearchFilter() {
+        this._filter = this._searchEntry.get_text().toLowerCase();
+        this._fillList();
+    }
+
     _onOpenStateChanged(menu, open) {
         if (open) {
+            this._focusTimeout = setTimeout(() => {
+                this._searchEntry.set_text("");
+                global.stage.set_key_focus(this._searchEntry);
+            }, 50);
             if (this._delay == null) {
                 this._fillList();
                 let interval = 30000 - (parseInt(new Date().getTime()) % 30000);
@@ -230,6 +280,10 @@ class Indicator extends PanelMenu.Button {
             }
         }
         else {
+            if (this._focusTimeout) {
+                GLib.Source.remove(this._focusTimeout);
+                this._focusTimeout = null;
+            }
             if (this._delay) {
                 GLib.Source.remove(this._delay);
                 this._delay = null;

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-13 00:50+0300\n"
+"POT-Creation-Date: 2026-03-06 15:57+0300\n"
 "PO-Revision-Date: 2023-04-30 17:59+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: \n"
@@ -26,11 +26,15 @@ msgstr "De code is gekopieerd naar het klembord."
 msgid "Copied code is: "
 msgstr ""
 
-#: extension.js:186 prefs.js:397
+#: extension.js:189 prefs.js:397
 msgid "Unlock Keyring"
 msgstr ""
 
-#: extension.js:199
+#: extension.js:216
+msgid "Search..."
+msgstr ""
+
+#: extension.js:240
 msgid "Preferences"
 msgstr "Voorkeuren"
 

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-13 00:50+0300\n"
-"PO-Revision-Date: 2025-07-13 00:51+0300\n"
+"POT-Creation-Date: 2026-03-06 15:57+0300\n"
+"PO-Revision-Date: 2026-03-06 15:59+0300\n"
 "Last-Translator: Osman Karagöz <osmank3@gmail.com>\n"
 "Language-Team: \n"
 "Language: tr\n"
@@ -26,11 +26,15 @@ msgstr "Kod panoya kopyalandı."
 msgid "Copied code is: "
 msgstr "Kopyalanan kod: "
 
-#: extension.js:186 prefs.js:397
+#: extension.js:189 prefs.js:397
 msgid "Unlock Keyring"
 msgstr "Anahtarlığın Kilidin Aç"
 
-#: extension.js:199
+#: extension.js:216
+msgid "Search..."
+msgstr "Ara..."
+
+#: extension.js:240
 msgid "Preferences"
 msgstr "Tercihler"
 

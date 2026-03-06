@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: otp-keys\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-13 00:50+0300\n"
+"POT-Creation-Date: 2026-03-06 15:57+0300\n"
 "PO-Revision-Date: 2025-07-13T12:33:00+02:00\n"
 "Last-Translator: Óscar García Amor <ogarcia@connectical.com>\n"
 "Language-Team: \n"
@@ -25,11 +25,15 @@ msgstr "Código copiado en el portapapeles."
 msgid "Copied code is: "
 msgstr "El código copiado es:"
 
-#: extension.js:186 prefs.js:397
+#: extension.js:189 prefs.js:397
 msgid "Unlock Keyring"
 msgstr "Desbloquear llavero"
 
-#: extension.js:199
+#: extension.js:216
+msgid "Search..."
+msgstr ""
+
+#: extension.js:240
 msgid "Preferences"
 msgstr "Preferencias"
 
