@@ -2,7 +2,7 @@
 Show and copy otp keys
 
 ## Features
-* Show otp codes on panel menu
+* Show or search otp codes on panel menu
 * Copy codes to clipboards
 * Supports SHA1, SHA256, SHA512 algoritms
 * 30 and 60 seconds epoc time

@@ -42,11 +42,12 @@ class OtpMenuItem extends PopupMenu.PopupBaseMenuItem {
         GObject.registerClass(this);
     }
 
-    constructor(otp, settings) {
+    constructor(otp, settings, menu) {
         super();
 
         this._otp = otp;
         this._settings = settings;
+        this._menu = menu;
 
         let labelStatus = {
             username: true,
@@ -114,6 +115,8 @@ class OtpMenuItem extends PopupMenu.PopupBaseMenuItem {
 
         if (this._settings.get_boolean(SETTINGS_NOTIFY))
             Main.notify(_("Code copied to clipboard."), _("Copied code is: ") + code);
+        
+        this._menu.close();
     }
 
     human_readable_code(code) {
@@ -197,7 +200,7 @@ class Indicator extends PanelMenu.Button {
                 if (this._filter === "" ||
                     otp.username.toLowerCase().includes(this._filter) ||
                     otp.issuer.toLowerCase().includes(this._filter)) {
-                        let item = new OtpMenuItem(otp, this._settings);
+                        let item = new OtpMenuItem(otp, this._settings, this.menu);
                         this._scrollOtpList.addMenuItem(item);
                 }
             });
@@ -251,7 +254,7 @@ class Indicator extends PanelMenu.Button {
 
     _onOpenStateChanged(menu, open) {
         if (open) {
-            this._focusTimeout = setTimeout(() => {
+            setTimeout(() => {
                 this._searchEntry.set_text("");
                 global.stage.set_key_focus(this._searchEntry);
             }, 50);
@@ -280,10 +283,6 @@ class Indicator extends PanelMenu.Button {
             }
         }
         else {
-            if (this._focusTimeout) {
-                GLib.Source.remove(this._focusTimeout);
-                this._focusTimeout = null;
-            }
             if (this._delay) {
                 GLib.Source.remove(this._delay);
                 this._delay = null;
