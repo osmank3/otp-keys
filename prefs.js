@@ -20,6 +20,7 @@ const SETTINGS_OTP_LIST = "secret-list";
 const SETTINGS_NOTIFY = "notifications";
 const SETTINGS_COPY_ICONS = "copy-icons";
 const SETTINGS_MENU_LABEL_ORDER = "menu-label-order";
+const SETTINGS_DYNAMIC_MENU_RATIO = "dynamic-menu-ratio";
 
 class OtpRoot {
     constructor(extension) {
@@ -431,6 +432,18 @@ class OtpKeysSettingsWidget extends Adw.PreferencesGroup{
         this.add(this.showCopyIconsSwitch);
 
         this.otpRoot.settings.bind(SETTINGS_COPY_ICONS, this.showCopyIconsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT)
+
+        this.dynamicRatioSpinRow = new Adw.SpinRow({
+            title: _("Max Menu High Percentage"),
+            adjustment: new Gtk.Adjustment({
+                lower:20,
+                upper:80,
+                step_increment: 1
+            })
+        });
+        this.add(this.dynamicRatioSpinRow);
+
+        this.otpRoot.settings.bind(SETTINGS_DYNAMIC_MENU_RATIO, this.dynamicRatioSpinRow, 'value', Gio.SettingsBindFlags.DEFAULT)
 
         this.flowboxSwitchesLabels = {
             username: _("Username"),

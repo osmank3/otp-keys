@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-06 15:57+0300\n"
+"POT-Creation-Date: 2026-04-09 23:53+0300\n"
 "PO-Revision-Date: 2023-01-23 19:04+01000\n"
 "Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -16,182 +16,186 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:116 prefs.js:215
+#: extension.js:118 prefs.js:216
 msgid "Code copied to clipboard."
 msgstr "Codice copiato negli appunti."
 
-#: extension.js:116
+#: extension.js:118
 msgid "Copied code is: "
 msgstr ""
 
-#: extension.js:189 prefs.js:397
+#: extension.js:193 prefs.js:398
 msgid "Unlock Keyring"
 msgstr ""
 
-#: extension.js:216
+#: extension.js:223
 msgid "Search..."
 msgstr ""
 
-#: extension.js:240
+#: extension.js:247
 msgid "Preferences"
 msgstr "Preferenze"
 
-#: prefs.js:204
+#: prefs.js:205
 #, fuzzy
 msgid "Otp link exported to clipboard."
 msgstr "Codice copiato negli appunti."
 
-#: prefs.js:319
+#: prefs.js:320
 msgid "Secrets"
 msgstr "Segreti"
 
-#: prefs.js:358
+#: prefs.js:359
 msgid "Refresh"
 msgstr ""
 
-#: prefs.js:416
+#: prefs.js:417
 msgid "Settings"
 msgstr ""
 
-#: prefs.js:422
+#: prefs.js:423
 msgid "Show Notifications"
 msgstr ""
 
-#: prefs.js:429
+#: prefs.js:430
 msgid "Show Copy Icons"
 msgstr ""
 
-#: prefs.js:436 prefs.js:451 prefs.js:804
+#: prefs.js:437
+msgid "Max Menu High Percentage"
+msgstr ""
+
+#: prefs.js:449 prefs.js:464 prefs.js:817
 msgid "Username"
 msgstr "Nome utente"
 
-#: prefs.js:437 prefs.js:452 prefs.js:809
+#: prefs.js:450 prefs.js:465 prefs.js:822
 msgid "Issuer"
 msgstr ""
 
-#: prefs.js:438 prefs.js:453
+#: prefs.js:451 prefs.js:466
 msgid "Code"
 msgstr ""
 
-#: prefs.js:471
+#: prefs.js:484
 msgid "Extension Menu Rows Label Order"
 msgstr ""
 
-#: prefs.js:472
+#: prefs.js:485
 msgid "Extension menu rows content states and order"
 msgstr ""
 
-#: prefs.js:519 prefs.js:761
+#: prefs.js:532 prefs.js:774
 msgid "Move"
 msgstr ""
 
-#: prefs.js:618
+#: prefs.js:631
 msgid "Copy"
 msgstr ""
 
-#: prefs.js:706
+#: prefs.js:719
 msgid "Add Secret"
 msgstr "Aggingi segreto"
 
-#: prefs.js:738 prefs.js:895
+#: prefs.js:751 prefs.js:908
 msgid "Edit"
 msgstr ""
 
-#: prefs.js:747
+#: prefs.js:760
 msgid "Export"
 msgstr ""
 
-#: prefs.js:756
+#: prefs.js:769
 msgid "Remove"
 msgstr ""
 
-#: prefs.js:791 prefs.js:859 prefs.js:950
+#: prefs.js:804 prefs.js:872 prefs.js:963
 msgid "Save"
 msgstr "Salva"
 
-#: prefs.js:814
+#: prefs.js:827
 #, fuzzy
 msgid "Secret"
 msgstr "Segreti"
 
-#: prefs.js:819
+#: prefs.js:832
 msgid "Period"
 msgstr ""
 
-#: prefs.js:821
+#: prefs.js:834
 #, fuzzy
 msgid "30 seconds"
 msgstr "30 secondi"
 
-#: prefs.js:821
+#: prefs.js:834
 #, fuzzy
 msgid "60 seconds"
 msgstr "60 secondi"
 
-#: prefs.js:826
+#: prefs.js:839
 msgid "Digits"
 msgstr "Cifre"
 
-#: prefs.js:837
+#: prefs.js:850
 #, fuzzy
 msgid "Algorithm"
 msgstr "Algoritmo"
 
-#: prefs.js:872 prefs.js:1000
+#: prefs.js:885 prefs.js:1013
 msgid "Fields must be filled"
 msgstr "I campi devono essere compilati"
 
-#: prefs.js:874
+#: prefs.js:887
 msgid "Unaccepted character for issuer: '&amp;'"
 msgstr ""
 
-#: prefs.js:888 prefs.js:1005
+#: prefs.js:901 prefs.js:1018
 msgid "Otp already available"
 msgstr ""
 
-#: prefs.js:931
+#: prefs.js:944
 #, fuzzy
 msgid "Import Secret"
 msgstr "Nuovo segreto"
 
-#: prefs.js:961
+#: prefs.js:974
 msgid "QR Image"
 msgstr ""
 
-#: prefs.js:972
+#: prefs.js:985
 msgid "QR Camera"
 msgstr ""
 
-#: prefs.js:984
+#: prefs.js:997
 #, fuzzy
 msgid "Secret Link"
 msgstr "Segreti"
 
-#: prefs.js:1015
+#: prefs.js:1028
 msgid "QR Code imported"
 msgstr ""
 
-#: prefs.js:1024
+#: prefs.js:1037
 msgid "Select QR Image"
 msgstr ""
 
-#: prefs.js:1046
+#: prefs.js:1059
 msgid "Image does not contain QR Code"
 msgstr ""
 
-#: prefs.js:1062
+#: prefs.js:1075
 msgid "QR Code not recognised"
 msgstr ""
 
-#: prefs.js:1078
+#: prefs.js:1091
 msgid "QR Code Scan Stopped"
 msgstr ""
 
-#: prefs.js:1097
+#: prefs.js:1110
 msgid "No camera found"
 msgstr ""
 
-#: prefs.js:1100
+#: prefs.js:1113
 msgid "QR Code Scan Started"
 msgstr ""
 

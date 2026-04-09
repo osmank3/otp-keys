@@ -20,5 +20,11 @@
       <summary>Menu label order</summary>
       <description>A list of label order, username, issuer and code with active statuses</description>
     </key>
+    <key name="dynamic-menu-ratio" type="i">
+      <default>50</default>
+      <range min="20" max="80" />
+      <summary>Dynamic ratio percentage</summary>
+      <description>Sets a percentage value between 20 and 80 for the UI layout.</description>
+    </key>
   </schema>
 </schemalist>

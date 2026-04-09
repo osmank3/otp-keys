@@ -35,6 +35,7 @@ const SETTINGS_OTP_LIST = "secret-list";
 const SETTINGS_NOTIFY = "notifications";
 const SETTINGS_COPY_ICONS = "copy-icons";
 const SETTINGS_MENU_LABEL_ORDER = "menu-label-order";
+const SETTINGS_DYNAMIC_MENU_RATIO = "dynamic-menu-ratio";
 
 
 class OtpMenuItem extends PopupMenu.PopupBaseMenuItem {
@@ -205,6 +206,9 @@ class Indicator extends PanelMenu.Button {
                 }
             });
         }
+        let monitorHeight = Main.layoutManager.primaryMonitor.height;
+        let dynamicMaxHeight = Math.floor(monitorHeight * this._settings.get_int(SETTINGS_DYNAMIC_MENU_RATIO) / 100);
+        this._scrollView.set_style(`max-height: ${dynamicMaxHeight}px;`);
     }
 
     _prepareMenu() {
@@ -231,13 +235,13 @@ class Indicator extends PanelMenu.Button {
         this.menu.addMenuItem(searchEntryItem);
 
         this._scrollOtpList = new PopupMenu.PopupMenuSection();
-        let scrollView = new St.ScrollView({
+
+        this._scrollView = new St.ScrollView({
             overlay_scrollbars: true,
-            style_class: 'scroll-view',
         });
         let scrollViewSection = new PopupMenu.PopupMenuSection();
-        scrollView.add_child(this._scrollOtpList.actor);
-        scrollViewSection.actor.add_child(scrollView);
+        this._scrollView.add_child(this._scrollOtpList.actor);
+        scrollViewSection.actor.add_child(this._scrollView);
         this.menu.addMenuItem(scrollViewSection);
 
         let preferences = new PopupMenu.PopupMenuItem(_("Preferences"));
@@ -295,6 +299,9 @@ class Indicator extends PanelMenu.Button {
     }
 
     _onDestroy() {
+        this._settings.disconnect(this._changedId);
+        this._changedId = null;
+
         if (this._delay) {
             GLib.Source.remove(this._delay);
             this._delay = null;
